@@ -16,6 +16,6 @@ Diseño de la herramienta detallado.
 ## Codigo RAPID
 Codigo en RAPID del m´odulo utilizado para el desarrollo de la practica.
 ## Video
-V´ıdeo que contenga la simulaci´on en RobotStudio as´ı como la implementaci´on de la pr´actica con los robots
+Vıdeo que contenga la simulaci´on en RobotStudio ası como la implementaci´on de la pr´actica con los robots
 reales.
-Los videos debe comenzar con la introducci´on oficial del laboratorio LabSIR Intro LabSIR.
+Los videos debe comenzar con la introduccion oficial del laboratorio LabSIR Intro LabSIR.
