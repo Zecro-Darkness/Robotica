@@ -108,5 +108,7 @@ A continuación se muestra una imagen del resultado obtenido en la práctica rea
 
 ## Video
 Link del video 
-(https://drive.google.com/file/d/1cdAusRgLNZHvZaGqs8K5OoOsfnYZMoqO/view?usp=sharing)
+(https://drive.google.com/file/d/1cdAusRgLNZHvZaGqs8K5OoOsfnYZMoqO/view?usp=sharing) link de la nacioanl
+link cuenta personal
+(https://drive.google.com/file/d/1YGagEWBzPbZdb1dzw0J6X7Y1IiSvSFHw/view?usp=sharing)
 
