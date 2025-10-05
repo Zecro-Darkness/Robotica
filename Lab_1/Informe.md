@@ -14,6 +14,20 @@ Descripcion de las funciones utilizadas.
 ## Diseño de la herramienta
 ### Objeivo de la herramienta
 La herramienta diseñada tiene como objetivo principal permitir que el robot industrial IRB 140 pueda sostener y manipular un marcador o plumón para realizar la decoración de tortas virtuales o reales. Adicionalmente, el diseño incorpora un resorte que actúa como mecanismo de compensación ante posibles errores en la calibración de la herramienta o desviaciones propias del robot. Este resorte proporciona una tolerancia mecánica, asegurando que, incluso si existen pequeñas imprecisiones en la posición del robot o en el Tooldata, el marcador mantenga un contacto adecuado con la superficie de trabajo y permita un trazo continuo y preciso durante la ejecución de las trayectorias.
+### Diseño conceptual herramienta
+La herramienta diseñada es un soporte para marcador, destinada a sostener de manera segura un plumón o marcador en el flanche del robot industrial IRB 140. La herramienta tiene una forma cilíndrica y se compone de dos piezas principales:
+
+###*Cuerpo principal:
+
+Incluye la base que se fija al flanche del robot mediante cuatro huecos de sujeción, garantizando un acople estable y seguro.
+
+Contiene un compartimento donde se inserta el marcador, formando un único conjunto con la base para facilitar la manipulación y la estabilidad del instrumento.
+
+###*Tapa:
+
+Se ensambla al cuerpo principal mediante un sistema a presión, permitiendo un cierre seguro pero desmontable.
+
+Su función es mantener el marcador firme en su posición durante el movimiento del robot, evitando desplazamientos que puedan afectar la precisión de las trayectorias.
 ## Codigo RAPID
 Codigo en RAPID del m´odulo utilizado para el desarrollo de la practica.
 ## Video
