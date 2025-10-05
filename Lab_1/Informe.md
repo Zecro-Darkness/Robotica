@@ -53,11 +53,13 @@ Las trayectorias se ejecutan de forma secuencial para asegurar trazos continuos 
 Se implementa un condicional IF para iniciar la banda transportadora y la rutina de decoración, asegurando que el robot solo comience la operación cuando las condiciones sean correctas.
 
 **3. Resultado en RobotStudio:**
+
 La ejecución del código genera en la simulación de RobotStudio el diseño final de la decoración, reflejando fielmente la disposición de letras y patrones definidos en las trayectorias.
 
 ![Resultado](Imagenes/RobotStudio)
 
 **4. Resultado Practica**
+
 A continuación se muestra una imagen del resultado obtenido en la práctica real:
 
 ![Resultado](Imagenes/Practica)
