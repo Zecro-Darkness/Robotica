@@ -17,13 +17,13 @@ La herramienta diseñada tiene como objetivo principal permitir que el robot ind
 ### Diseño conceptual herramienta
 La herramienta diseñada es un soporte para marcador, destinada a sostener de manera segura un plumón o marcador en el flanche del robot industrial IRB 140. La herramienta tiene una forma cilíndrica y se compone de dos piezas principales:
 
-1.**Cuerpo principal**:
+**1. Cuerpo principal**:
 
 Incluye la base que se fija al flanche del robot mediante cuatro huecos de sujeción, garantizando un acople estable y seguro.
 
 Contiene un compartimento donde se inserta el marcador, formando un único conjunto con la base para facilitar la manipulación y la estabilidad del instrumento.
 
-2.**Tapa**:
+**2. Tapa**:
 
 Se ensambla al cuerpo principal mediante un sistema a presión, permitiendo un cierre seguro pero desmontable.
 
