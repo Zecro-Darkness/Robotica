@@ -19,15 +19,15 @@ La herramienta diseñada es un soporte para marcador, destinada a sostener de ma
 
 **1. Cuerpo principal**:
 
-Incluye la base que se fija al flanche del robot mediante cuatro huecos de sujeción, garantizando un acople estable y seguro.
+- Incluye la base que se fija al flanche del robot mediante cuatro huecos de sujeción, garantizando un acople estable y seguro.
 
-Contiene un compartimento donde se inserta el marcador, formando un único conjunto con la base para facilitar la manipulación y la estabilidad del instrumento.
+- Contiene un compartimento donde se inserta el marcador, formando un único conjunto con la base para facilitar la manipulación y la estabilidad del instrumento.
 
 **2. Tapa**:
 
-Se ensambla al cuerpo principal mediante un sistema a presión, permitiendo un cierre seguro pero desmontable.
+- Se ensambla al cuerpo principal mediante un sistema a presión, permitiendo un cierre seguro pero desmontable.
 
-Su función es mantener el marcador firme en su posición durante el movimiento del robot, evitando desplazamientos que puedan afectar la precisión de las trayectorias.
+- Su función es mantener el marcador firme en su posición durante el movimiento del robot, evitando desplazamientos que puedan afectar la precisión de las trayectorias.
 ## Codigo RAPID
 Codigo en RAPID del m´odulo utilizado para el desarrollo de la practica.
 ## Video
