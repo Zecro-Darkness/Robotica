@@ -56,8 +56,9 @@ Se implementa un condicional IF para iniciar la banda transportadora y la rutina
 La ejecución del código genera en la simulación de RobotStudio el diseño final de la decoración, reflejando fielmente la disposición de letras y patrones definidos en las trayectorias.
 
 ![Resultado](Imagenes/RobotStudio)
-A continuación se muestra una imagen del resultado obtenido en la práctica real:
+
 **4. Resultado Practica**
+A continuación se muestra una imagen del resultado obtenido en la práctica real:
 
 ![Resultado](Imagenes/Practica)
 
