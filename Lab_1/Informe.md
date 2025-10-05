@@ -7,11 +7,17 @@ Descripcion detallada de la solucion planteada.
 ### Restricciones
 Segun las restricciones
  -El tamaño de la torta es para 20 personas
+ 
  -Las trayectorias a desarrollar deberán realizarse en un rango de velocidades entre 100 y 1000.
+ 
  -La zona tolerable de errores máxima debe ser de z10.
+ 
  -El movimiento debe partir de una posición home especificada (puede ser el home del robot) y realizar la trayectoria de cada palabra y decoración con un trazo continuo. El movimiento debe finalizar en la misma posición de home en la que se inició.
+ 
  -La decoración de la torta debe ser realizada sobre una torta virtual.
+ 
  -Los nombres deben estar separados.
+ 
 
 ### Solución 
 
