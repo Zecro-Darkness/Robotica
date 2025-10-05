@@ -31,25 +31,25 @@ Plano de planta de la ubicacion de cada uno de los elementos.
 ## Funciones utilizadas
 Descripcion de las funciones utilizadas.
 
-*SetDO: Activa o desactiva una salida digital
+ -SetDO: Activa o desactiva una salida digital
 
-*WaitTime: Pausa la ejecución durante t segundos
+ -WaitTime: Pausa la ejecución durante t segundos
 
-*Conveyor_FWD: Controlan el transportador (conveyor), Conveyor_FWD lo enciende hacia adelante.
+ -Conveyor_FWD: Controlan el transportador (conveyor), Conveyor_FWD lo enciende hacia adelante.
 
-*Conveyor_STOP: Controlan el transportador (conveyor), Conveyor_STOP lo detiene.
+ -Conveyor_STOP: Controlan el transportador (conveyor), Conveyor_STOP lo detiene.
 
-*MoveJ: Movimiento articular (Joint) hacia objetivo.
+ -MoveJ: Movimiento articular (Joint) hacia objetivo.
 
-*MoveL: Movimiento lineal hacia objetivo.
+ -MoveL: Movimiento lineal hacia objetivo.
 
-*MoveC: Movimiento circular pasando por objetivo1 y terminando en objetivo2.
+ -MoveC: Movimiento circular pasando por objetivo1 y terminando en objetivo2.
 
-*PROC / ENDPROC: Define un procedimiento (subrutina).
+ -PROC / ENDPROC: Define un procedimiento (subrutina).
 
-*WHILE: Bucle repetitivo.
+ -WHILE: Bucle repetitivo.
 
-*IF / ENDIF: Condicional simple.
+ -IF / ENDIF: Condicional simple.
 
 ## Diseño de la herramienta
 
