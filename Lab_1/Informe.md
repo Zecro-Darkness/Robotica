@@ -26,6 +26,7 @@ Nuestra solución plantea una torta rectagunlar de dimensiones XXXXX cm que alca
 
 ## Diagrama de flujo 
 Diagrama de flujo de acciones del robot.
+ ![Diagrama de flujo](Imagenes/Diagrama en blanco)
 ## Plano de planta
 Plano de planta de la ubicacion de cada uno de los elementos.
 ## Funciones utilizadas
