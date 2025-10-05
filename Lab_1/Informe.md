@@ -107,6 +107,6 @@ A continuación se muestra una imagen del resultado obtenido en la práctica rea
 
 
 ## Video
-Vıdeo que contenga la simulaci´on en RobotStudio ası como la implementaci´on de la pr´actica con los robots
-reales.
-Los videos debe comenzar con la introduccion oficial del laboratorio LabSIR Intro LabSIR.
+Link del video 
+(https://drive.google.com/file/d/1cdAusRgLNZHvZaGqs8K5OoOsfnYZMoqO/view?usp=sharing)
+
