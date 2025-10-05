@@ -5,7 +5,8 @@
 
 Descripcion detallada de la solucion planteada.
 ### Restricciones
-Segun las restricciones
+Segun las restricciones:
+
  -El tamaño de la torta es para 20 personas
  
  -Las trayectorias a desarrollar deberán realizarse en un rango de velocidades entre 100 y 1000.
@@ -20,6 +21,7 @@ Segun las restricciones
  
 
 ### Solución 
+
 
 ## Diagrama de flujo 
 Diagrama de flujo de acciones del robot.
