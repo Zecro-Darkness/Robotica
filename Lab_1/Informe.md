@@ -1,9 +1,19 @@
 
 # Informe 1
 
-## Solucion planteada
+## Solución planteada
 
 Descripcion detallada de la solucion planteada.
+### Restricciones
+Segun las restricciones
+ -El tamaño de la torta es para 20 personas
+ -Las trayectorias a desarrollar deberán realizarse en un rango de velocidades entre 100 y 1000.
+ -La zona tolerable de errores máxima debe ser de z10.
+ -El movimiento debe partir de una posición home especificada (puede ser el home del robot) y realizar la trayectoria de cada palabra y decoración con un trazo continuo. El movimiento debe finalizar en la misma posición de home en la que se inició.
+ -La decoración de la torta debe ser realizada sobre una torta virtual.
+ -Los nombres deben estar separados.
+
+### Solución 
 
 ## Diagrama de flujo 
 Diagrama de flujo de acciones del robot.
@@ -12,7 +22,7 @@ Plano de planta de la ubicacion de cada uno de los elementos.
 ## Funciones utilizadas
 Descripcion de las funciones utilizadas.
 ## Diseño de la herramienta
-### Objeivo de la herramienta
+### Objetivo de la herramienta
 La herramienta diseñada tiene como objetivo principal permitir que el robot industrial IRB 140 pueda sostener y manipular un marcador o plumón para realizar la decoración de tortas virtuales o reales. Adicionalmente, el diseño incorpora un resorte que actúa como mecanismo de compensación ante posibles errores en la calibración de la herramienta o desviaciones propias del robot. Este resorte proporciona una tolerancia mecánica, asegurando que, incluso si existen pequeñas imprecisiones en la posición del robot o en el Tooldata, el marcador mantenga un contacto adecuado con la superficie de trabajo y permita un trazo continuo y preciso durante la ejecución de las trayectorias.
 ### Diseño conceptual herramienta
 La herramienta diseñada es un soporte para marcador, destinada a sostener de manera segura un plumón o marcador en el flanche del robot industrial IRB 140. La herramienta tiene una forma cilíndrica y se compone de dos piezas principales:
