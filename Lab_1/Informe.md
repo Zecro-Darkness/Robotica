@@ -38,7 +38,23 @@ La herramienta fue diseñada en el software Fusion360 y se fabricó mediante imp
 La calibración de la herramienta se realizó posicionando el marcador montado en el flanche del robot sobre un punto de referencia común desde cuatro posiciones diferentes: frente, trasera, lado izquierdo y lado derecho. Este procedimiento permitió determinar con precisión el Tooldata, asegurando que el robot reconociera correctamente la posición y orientación de la punta del marcador durante la ejecución de las trayectorias.
 
 ## Codigo RAPID
-Codigo en RAPID del m´odulo utilizado para el desarrollo de la practica.
+El código RAPID desarrollado para este laboratorio tiene como objetivo ejecutar las trayectorias necesarias para la decoración de la torta virtual. Para ello, se diseñaron una serie de paths definidos manualmente y ajustados de manera iterativa hasta lograr el patrón de decoración deseado.
+
+Cada trayectoria se encuentra organizada dentro del módulo llamado Module1, donde se establecen los puntos de inicio, fin y las posiciones intermedias del marcador sobre la superficie de trabajo. El código incluye:
+
+**1. Rutinas de movimiento del robot:**
+
+MoveL y MoveJ para movimientos lineales y conjuntos de articulaciones, respectivamente.
+
+Las trayectorias se ejecutan de forma secuencial para asegurar trazos continuos y precisos.
+
+**2. Control de condiciones con IF:**
+
+Se implementa un condicional IF para iniciar la banda transportadora y la rutina de decoración, asegurando que el robot solo comience la operación cuando las condiciones sean correctas.
+
+**3. Resultado en RobotStudio:**
+
+La ejecución del código genera en la simulación de RobotStudio el diseño final de la decoración, reflejando fielmente la disposición de letras y patrones definidos en las trayectorias.
 ## Video
 Vıdeo que contenga la simulaci´on en RobotStudio ası como la implementaci´on de la pr´actica con los robots
 reales.
