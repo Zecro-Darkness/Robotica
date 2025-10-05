@@ -22,6 +22,7 @@ Segun las restricciones:
 
 ### Solución 
 
+Nuestra solución plantea una torta rectagunlar de dimensiones XXXXX cm que alcanza para 20 personas, los nombres que escribiremos son de los 3 integrantes (juan, oscar y alejo) junto a un dibujo del raton jerry animado, la velocidad escogida es de 100 para tener un menor velocidad pero mayor precision en la escritura por el marcador, 
 
 ## Diagrama de flujo 
 Diagrama de flujo de acciones del robot.
@@ -29,7 +30,29 @@ Diagrama de flujo de acciones del robot.
 Plano de planta de la ubicacion de cada uno de los elementos.
 ## Funciones utilizadas
 Descripcion de las funciones utilizadas.
+
+*SetDO: Activa o desactiva una salida digital
+
+*WaitTime: Pausa la ejecución durante t segundos
+
+*Conveyor_FWD: Controlan el transportador (conveyor), Conveyor_FWD lo enciende hacia adelante.
+
+*Conveyor_STOP: Controlan el transportador (conveyor), Conveyor_STOP lo detiene.
+
+*MoveJ: Movimiento articular (Joint) hacia objetivo.
+
+*MoveL: Movimiento lineal hacia objetivo.
+
+*MoveC: Movimiento circular pasando por objetivo1 y terminando en objetivo2.
+
+*PROC / ENDPROC: Define un procedimiento (subrutina).
+
+*WHILE: Bucle repetitivo.
+
+*IF / ENDIF: Condicional simple.
+
 ## Diseño de la herramienta
+
 ### Objetivo de la herramienta
 La herramienta diseñada tiene como objetivo principal permitir que el robot industrial IRB 140 pueda sostener y manipular un marcador o plumón para realizar la decoración de tortas virtuales o reales. Adicionalmente, el diseño incorpora un resorte que actúa como mecanismo de compensación ante posibles errores en la calibración de la herramienta o desviaciones propias del robot. Este resorte proporciona una tolerancia mecánica, asegurando que, incluso si existen pequeñas imprecisiones en la posición del robot o en el Tooldata, el marcador mantenga un contacto adecuado con la superficie de trabajo y permita un trazo continuo y preciso durante la ejecución de las trayectorias.
 ### Diseño conceptual herramienta
