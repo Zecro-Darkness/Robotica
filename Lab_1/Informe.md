@@ -28,6 +28,13 @@ La herramienta diseñada es un soporte para marcador, destinada a sostener de ma
 - Se ensambla al cuerpo principal mediante un sistema a presión, permitiendo un cierre seguro pero desmontable.
 
 - Su función es mantener el marcador firme en su posición durante el movimiento del robot, evitando desplazamientos que puedan afectar la precisión de las trayectorias.
+
+### Proceso de construcción
+La herramienta fue diseñada en el software Fusion360 y se fabricó mediante impresión 3D con material PLA, sin presentar dificultades durante la fabricación. El único ajuste realizado fue lijar ligeramente la zona de inserción de la tapa, asegurando un ensamblaje a presión correcto y un acople firme del marcador durante el movimiento del robot.
+
+### Calibración herramienta
+La calibración de la herramienta se realizó posicionando el marcador montado en el flanche del robot sobre un punto de referencia común desde cuatro posiciones diferentes: frente, trasera, lado izquierdo y lado derecho. Este procedimiento permitió determinar con precisión el Tooldata, asegurando que el robot reconociera correctamente la posición y orientación de la punta del marcador durante la ejecución de las trayectorias.
+
 ## Codigo RAPID
 Codigo en RAPID del m´odulo utilizado para el desarrollo de la practica.
 ## Video
