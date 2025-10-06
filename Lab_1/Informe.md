@@ -29,6 +29,7 @@ Diagrama de flujo de acciones del robot.
  ![Diagrama de flujo](Imagenes/Diagrama)
 ## Plano de planta
 Plano de planta de la ubicacion de cada uno de los elementos.
+ ![Plano de planta](Imagenes/Plano.png)
 ## Funciones utilizadas
 Descripcion de las funciones utilizadas.
 
