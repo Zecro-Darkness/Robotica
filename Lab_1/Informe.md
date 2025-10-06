@@ -40,68 +40,64 @@ Descripcion de las funciones utilizadas.
 
  -SetDO: Activa o desactiva una salida digital
 
-´´´C
+```C
  SetDO DO_01,0;   ! Apaga la salida digital DO_01
  SetDO DO_02,0;   ! Apaga la salida digital DO_02
  SetDO DO_01,1;   ! Enciende la salida DO_01
-
+```
 
  -WaitTime: Pausa la ejecución durante t segundos
-
+```C
  WaitTime 4;   ! Espera 4 segundos antes de continuar
  
  WaitTime 5;   ! Espera 5 segundos al final de la secuencia
-
+```
 
  -Conveyor_FWD: Controlan el transportador (conveyor), Conveyor_FWD lo enciende hacia adelante.
-
+```C
  Conveyor_FWD;   ! Enciende la banda transportadora
  
  WaitTime 4;     ! Espera 4 segundos mientras la banda mueve
  
  Conveyor_STOP;  ! Detiene la banda transportadora
-
+```
  -Conveyor_STOP: Controlan el transportador (conveyor), Conveyor_STOP lo detiene.
 
-  
+  ```C
  Conveyor_FWD;   ! Enciende la banda transportadora
  
  WaitTime 4;     ! Espera 4 segundos mientras la banda mueve
  
  Conveyor_STOP;  ! Detiene la banda transportadora
-
+```
  -MoveJ: Movimiento articular (Joint) hacia objetivo.
-
+```C
  MoveJ Target_320, v100, z10, herramienta\WObj:=Workobject;
-
+```
 
  -MoveL: Movimiento lineal hacia objetivo.
-
+```C
  MoveL Target_331, v100, z10, herramienta\WObj:=Workobject;
-
+```
 
  -MoveC: Movimiento circular pasando por objetivo1 y terminando en objetivo2.
-
+```C
  MoveC Target_100, Target_101, v100, z10, herramienta\WObj:=Workobject;
-
+```
 
  -PROC / ENDPROC: Define un procedimiento (subrutina).
-
+```
   PROC Path_10()
-  
      MoveL Target_310, v100, z10, herramienta\WObj:=Workobject;
-     
-     MoveL Target_311, v100, z10, herramienta\WObj:=Workobject;
-     
+     MoveL Target_311, v100, z10, herramienta\WObj:=Workobject;     
      MoveL Target_312, v100, z10, herramienta\WObj:=Workobject;
-     
  ENDPROC
-
+```
 
  -WHILE: Bucle repetitivo.
 
  Ejemplo:
- 
+ ```C
  WHILE TRUE DO
      IF DI_02=1 THEN     
          Path_770;         
@@ -109,12 +105,12 @@ Descripcion de las funciones utilizadas.
      ENDIF
      ...    
  ENDWHILE
-
+```
 
  -IF / ENDIF: Condicional simple.
 
  Ejemplo:
-
+```C
   IF DI_01=1 THEN
      SetDO DO_01,1;
      Conveyor_FWD;
@@ -125,7 +121,7 @@ Descripcion de las funciones utilizadas.
      ...
  ENDIF
 
-
+```
 ## Diseño de la herramienta
 
 ### Objetivo de la herramienta
