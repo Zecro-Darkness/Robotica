@@ -100,40 +100,30 @@ Descripcion de las funciones utilizadas.
 
 
  -WHILE: Bucle repetitivo.
+
+ Ejemplo:
  
-  WHILE TRUE DO
-  
-     IF DI_02=1 THEN
-     
-         Path_770;
-         
-         SetDO DO_01,0;
-         
+ WHILE TRUE DO
+     IF DI_02=1 THEN     
+         Path_770;         
+         SetDO DO_01,0;    
      ENDIF
-     
-     ...
-     
+     ...    
  ENDWHILE
 
 
  -IF / ENDIF: Condicional simple.
 
+ Ejemplo:
+
   IF DI_01=1 THEN
-  
      SetDO DO_01,1;
-     
      Conveyor_FWD;
-     
      WaitTime 4;
-     
      Conveyor_STOP;
-     
      Path_10;
-     
      Path_20;
-     
      ...
-     
  ENDIF
 
 
