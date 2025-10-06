@@ -42,8 +42,11 @@ Descripcion de las funciones utilizadas.
 
 ```C
  SetDO DO_01,0;   ! Apaga la salida digital DO_01
+
  SetDO DO_02,0;   ! Apaga la salida digital DO_02
+
  SetDO DO_01,1;   ! Enciende la salida DO_01
+
 ```
 
  -WaitTime: Pausa la ejecución durante t segundos
@@ -88,9 +91,13 @@ Descripcion de las funciones utilizadas.
  -PROC / ENDPROC: Define un procedimiento (subrutina).
 ```
   PROC Path_10()
+
      MoveL Target_310, v100, z10, herramienta\WObj:=Workobject;
-     MoveL Target_311, v100, z10, herramienta\WObj:=Workobject;     
+
+     MoveL Target_311, v100, z10, herramienta\WObj:=Workobject;
+    
      MoveL Target_312, v100, z10, herramienta\WObj:=Workobject;
+
  ENDPROC
 ```
 
@@ -98,12 +105,18 @@ Descripcion de las funciones utilizadas.
 
  Ejemplo:
  ```C
- WHILE TRUE DO
-     IF DI_02=1 THEN     
-         Path_770;         
-         SetDO DO_01,0;    
+ WHILE TRUE DO;
+
+     IF DI_02=1 THEN     ;
+
+         Path_770;
+
+         SetDO DO_01,0;
+
      ENDIF
-     ...    
+
+     ...
+
  ENDWHILE
 ```
 
