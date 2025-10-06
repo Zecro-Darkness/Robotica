@@ -41,27 +41,34 @@ Descripcion de las funciones utilizadas.
  -SetDO: Activa o desactiva una salida digital
 
  SetDO DO_01,0;   ! Apaga la salida digital DO_01
+ 
  SetDO DO_02,0;   ! Apaga la salida digital DO_02
+ 
  SetDO DO_01,1;   ! Enciende la salida DO_01
 
 
  -WaitTime: Pausa la ejecución durante t segundos
 
  WaitTime 4;   ! Espera 4 segundos antes de continuar
+ 
  WaitTime 5;   ! Espera 5 segundos al final de la secuencia
 
 
  -Conveyor_FWD: Controlan el transportador (conveyor), Conveyor_FWD lo enciende hacia adelante.
 
  Conveyor_FWD;   ! Enciende la banda transportadora
+ 
  WaitTime 4;     ! Espera 4 segundos mientras la banda mueve
+ 
  Conveyor_STOP;  ! Detiene la banda transportadora
 
  -Conveyor_STOP: Controlan el transportador (conveyor), Conveyor_STOP lo detiene.
 
   
  Conveyor_FWD;   ! Enciende la banda transportadora
+ 
  WaitTime 4;     ! Espera 4 segundos mientras la banda mueve
+ 
  Conveyor_STOP;  ! Detiene la banda transportadora
 
  -MoveJ: Movimiento articular (Joint) hacia objetivo.
@@ -82,33 +89,51 @@ Descripcion de las funciones utilizadas.
  -PROC / ENDPROC: Define un procedimiento (subrutina).
 
   PROC Path_10()
+  
      MoveL Target_310, v100, z10, herramienta\WObj:=Workobject;
+     
      MoveL Target_311, v100, z10, herramienta\WObj:=Workobject;
+     
      MoveL Target_312, v100, z10, herramienta\WObj:=Workobject;
+     
  ENDPROC
 
 
  -WHILE: Bucle repetitivo.
  
   WHILE TRUE DO
+  
      IF DI_02=1 THEN
+     
          Path_770;
+         
          SetDO DO_01,0;
+         
      ENDIF
+     
      ...
+     
  ENDWHILE
 
 
  -IF / ENDIF: Condicional simple.
 
   IF DI_01=1 THEN
+  
      SetDO DO_01,1;
+     
      Conveyor_FWD;
+     
      WaitTime 4;
+     
      Conveyor_STOP;
+     
      Path_10;
+     
      Path_20;
+     
      ...
+     
  ENDIF
 
 
