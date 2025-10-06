@@ -40,10 +40,9 @@ Descripcion de las funciones utilizadas.
 
  -SetDO: Activa o desactiva una salida digital
 
+´´´C
  SetDO DO_01,0;   ! Apaga la salida digital DO_01
- 
  SetDO DO_02,0;   ! Apaga la salida digital DO_02
- 
  SetDO DO_01,1;   ! Enciende la salida DO_01
 
 
