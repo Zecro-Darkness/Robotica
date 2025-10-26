@@ -21,3 +21,38 @@
 | **Montaje** | Piso, pared o techo | Piso, invertido o pared |
 | **Aplicaciones típicas** | Manipulación, machine tending, ensamble, empaque, soldadura, dispensado | Manipulación, machine tending, ensamble, soldadura, limpieza/pintura, empaque |
 
+## Home1 y Home2
+### Home1
+
+### Home2
+
+## Movimiento manual — Paso a paso
+
+> **Antes de empezar**
+> - Asegúrate de que el área esté despejada y sin personas dentro del alcance del robot.
+> - **Libera el paro de emergencia (E-STOP)** si está presionado.
+> - Verifica que no haya alarmas activas en el péndulo.
+
+1) **Seleccionar modo**
+   - Gira la **llave del Teach Pendant** a **TEACH (Manual)**.
+   - Esto bloquea la reproducción automática y habilita el “jog” manual.
+
+2) **Preparar servos**
+   - Pulsa **SERVO ON READY** para preparar el encendido.
+   - **Mantén el interruptor de habilitación (deadman)** en la **posición intermedia** mientras mueves el robot.
+
+3) **Elegir sistema de coordenadas**
+   - Usa el botón **COORD** para alternar:
+     - **JOINT (Articular):** movimiento eje por eje.
+     - **CARTESIANO (XYZ):** traslaciones/rotaciones del TCP en X, Y, Z.
+
+4) **Mover en modo articular (JOINT)**
+   - Con **boton de hombre muerto** en posición intermedia:
+   - Usa las teclas **S,L,U,R,B,T,E,8** de cada eje para mover de forma independiente.
+
+5) **Mover en modo cartesiano (XYZ)**
+   - Con **COORD** en **XYZ** y **deadman** activo:
+   - **Traslaciones:** usa **X+ / X-**, **Y+ / Y-**, **Z+ / Z-** para mover el **TCP** en línea recta.
+   - **Rotaciones:** usa **Rx+ / Rx-**, **Ry+ / Ry-**, **Rz+ / Rz-** para girar la orientación alrededor de los ejes X, Y, Z.
+   - Verifica en pantalla el **marco activo** para saber respecto a qué sistema estás moviendo.
+
