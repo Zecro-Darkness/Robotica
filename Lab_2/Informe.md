@@ -86,4 +86,39 @@ Usa las teclas **FAST** y **SLOW** para ciclar por los niveles:
 - Mantén el **Botón de hombre muerto** en posición intermedia y servos listos antes de mover.
 - Si cambias de herramienta/marco, vuelve a un nivel **bajo** hasta confirmar trayectorias.
 
+## funcionalidades de RoboDK
+
+
+## Comparativo: RoboDK vs RobotStudio
+
+| **Aspecto** | **RoboDK** | **RobotStudio (ABB)** |
+|--------------|-------------|------------------------|
+| **Fabricante / Enfoque** | Desarrollado por RoboDK Inc. (independiente). Multimarca, compatible con +500 modelos de robots industriales. | Desarrollado por ABB Robotics. Software oficial para la familia **ABB IRC5/OmniCore**. |
+| **Compatibilidad** | **Universal**: soporta ABB, Yaskawa/Motoman, Fanuc, KUKA, UR, Staubli, etc. | **Exclusivo de ABB**: solo trabaja con robots ABB y sus controladores. |
+| **Tipo de programación** | **Offline** y **Online (en tiempo real)** con drivers. Genera código nativo (.JBI, .LS, .SRC, .PRG, etc.). | **Offline** (programación virtual) y **Online** con Virtual Controller (simulación exacta del IRC5). |
+| **Lenguaje generado** | Usa **postprocesadores** que convierten la trayectoria a código nativo de cada marca (ej.: INFORM para Motoman). | Usa directamente **RAPID**, el lenguaje nativo de ABB (sin postproceso intermedio). |
+| **Comunicación con el robot real** | Por **Ethernet** (drivers o FTP). En Motoman usa **HSE (High Speed Ethernet)** o **MotoCom**. | Comunicación directa con el **Virtual Controller ABB** o el robot físico vía **RobotWare**. |
+| **Simulación de celda** | Permite crear celdas 3D con múltiples robots, cintas, PLC virtuales y periféricos CAD importados. | Simulación altamente realista del entorno ABB con cinemática exacta, trayectorias y herramientas virtuales. |
+| **Postprocesado (exportación)** | Muy flexible: cada robot tiene su propio **post** editable (Python). Se pueden personalizar rutinas, formatos, cabeceras, etc. | No necesita postprocesador (el Virtual Controller ya ejecuta RAPID directamente). |
+| **Precisión del modelo cinemático** | A nivel de fabricante (usa parámetros DH oficiales). Requiere calibrar si se desea correspondencia 1:1 con el robot físico. | Exactitud total: usa el **controlador virtual** idéntico al físico (misma firmware, librerías y limitaciones). |
+| **Integración con visión, CNC y CAD/CAM** | Muy buena: importación CAD (STEP, IGES, STL) y conversión directa de trayectorias CAM a movimientos de robot. | Limitada a módulos específicos de ABB (Machining PowerPac, ArcWeld, PickMaster, etc.). |
+| **Licenciamiento y costo** | Más **económico y flexible** (licencias modulares por funciones, incluso versión gratuita educativa). | **Comercial completo de ABB**, licencias por módulos y entorno cerrado. |
+| **Ventajas clave** | Multimarca, liviano, rápido de configurar, personalizable, ideal para enseñanza, integración y pruebas de células mixtas. | Simulación de más alta fidelidad para ABB, entorno idéntico al real, sincronización exacta con IRC5/OmniCore. |
+| **Limitaciones** | No reproduce exactamente los ciclos de control del fabricante (interpolaciones o zonas difieren levemente). | Solo funciona con robots ABB; mayor curva de aprendizaje si vienes de otras marcas. |
+| **Aplicaciones típicas** | Diseño y simulación de células multimarca, optimización de trayectorias, generación de código CNC/robot, educación e investigación. | Programación avanzada ABB (RAPID), validación de rutinas industriales, entrenamiento y mantenimiento virtual. |
+
+---
+
+### ✅ **Conclusión**
+- **RoboDK** es ideal cuando trabajas con **robots de diferentes marcas** (como Yaskawa + ABB), para crear gemelos digitales, probar trayectorias y generar código rápidamente.  
+  Es **versátil, liviano y accesible** para proyectos académicos o células mixtas.
+
+- **RobotStudio** es el entorno **más fiel y completo para ABB**, ya que usa el mismo controlador virtual que el robot real.  
+  Es **imprescindible** si se requiere validar con precisión el comportamiento de un IRB 140 en producción o entrenamiento avanzado.
+
+---
+
+### 💡 **Recomendación para tu proyecto (MH6 vs IRB 140)**
+- Usa **RoboDK** para programar, comparar y simular ambos robots en la misma celda virtual.
+- Usa **RobotStudio** solo para validar la precisión y tiempos del **IRB 140** y generar programas RAPID optimizados para el IRC5.
 
