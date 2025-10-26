@@ -86,8 +86,39 @@ Usa las teclas **FAST** y **SLOW** para ciclar por los niveles:
 - Mantén el **Botón de hombre muerto** en posición intermedia y servos listos antes de mover.
 - Si cambias de herramienta/marco, vuelve a un nivel **bajo** hasta confirmar trayectorias.
 
-## funcionalidades de RoboDK
+## funcionalidades de RoboD
 
+### 1) ¿Qué es RoboDK y para qué sirve?
+RoboDK es un software de simulación y programación offline para robots industriales, compatible con múltiples marcas (ABB, Yaskawa/Motoman, FANUC, KUKA, UR, etc.) Permite:
+
+- **crear y visualizar celdas 3D** con robots, herramientas y piezas.  
+- **planificación de trayectorias** (MoveJ, MoveL, etc.) y la **detección de colisiones**.  
+- Calcular **tiempos de ciclo** y optimiza movimientos antes de ejecutar en el robot real.  
+- Generar **código nativo** del controlador mediante **postprocesadores** (por ejemplo, archivos `.JBI` para Motoman).  
+- Ofrece **comunicación en línea (online)** con el robot a través de Ethernet, permitiendo moverlo y probar trayectorias en tiempo real.   
+
+### 2) Comunicación con Motoman: dos caminos válidos
+
+- **Dos formas**
+  - **Offline (código):** RoboDK **postprocesa** la trayectoria y genera archivos .JBI (lenguaje INFORM usado por Motoman). Luego los transfieres al controlador por **USB/CF** o **FTP** y los ejecutas desde el Teach Pendant.
+  - **Online (driver):** RoboDK se conecta por Ethernet al controlador y envía comandos en tiempo real usando un **driver Motoman**.
+
+- **Flujo Offline**
+  1) Simula celda y trayectorias en RoboDK.  
+  2) Exportas **.JBI** con el **postprocesador Motoman**.  
+  3) Transfiere el archivo al DX/YRC (se refiere a las familias de los controladores).  
+  4) Cargas el **JOB** en el robot y lo ejecuta (modo PLAY).  
+
+- **Flujo Online**
+  1) Conectas RoboDK al controlador por **Ethernet**.  
+  2) Seleccionas **TCP** y **marcos** coherentes.  
+  3) Desde RoboDK envías **MoveJ/MoveL** y jog en vivo; el controlador interpola y mueve el robot.  
+
+### 3) ¿Qué procesos realiza RoboDK para “mover” el Motoman?
+
+### 4) ¿Cuándo usar cada método?
+- **Offline (.JBI)**: ciclos repetitivos, producción, control de versiones del código, auditoría.
+- **Online (driver)**: puesta en marcha, “teach asistido”, pruebas rápidas de trayectoria, integración con visión/sensores en PC.
 
 ## Comparativo: RoboDK vs RobotStudio
 
