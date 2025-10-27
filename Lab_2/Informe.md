@@ -35,8 +35,11 @@
 
 ### HOME2 — posición operativa o de trabajo
 -Es la posición de parqueo/espera segura (Second Home Position o Check Point).
+
 -Se enseña manualmente por el integrador o programador para dejar el robot en una postura despejada al iniciar o terminar un ciclo.
--Es la que normalmente se usa en los programas (GO_HOME, CALL HOME2, etc.).
+
+-Es la que normalmente se usa en los programas (GO_HOME, CALL HOME2, etc).
+
 -Se puede registrar desde el Teach Pendant en:
 ROBOT → SECOND HOME POS → SET
 
@@ -102,7 +105,7 @@ Usa las teclas **FAST** y **SLOW** para ciclar por los niveles:
 - Mantén el **Botón de hombre muerto** en posición intermedia y servos listos antes de mover.
 - Si cambias de herramienta/marco, vuelve a un nivel **bajo** hasta confirmar trayectorias.
 
-## funcionalidades de RoboD
+## funcionalidades de RoboDK
 
 ### 1) ¿Qué es RoboDK y para qué sirve?
 RoboDK es un software de simulación y programación offline para robots industriales, compatible con múltiples marcas (ABB, Yaskawa/Motoman, FANUC, KUKA, UR, etc.) Permite:
