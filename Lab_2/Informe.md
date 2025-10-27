@@ -22,9 +22,12 @@
 | **Aplicaciones típicas** | Manipulación, machine tending, ensamble, empaque, soldadura, dispensado | Manipulación, machine tending, ensamble, soldadura, limpieza/pintura, empaque |
 
 ## Home1 y Home2
-### HOME1 — posición de transporte o referencia mecánica
+**HOME1 — posición de transporte o referencia mecánica**
+
 -Es la posición base de fábrica (también llamada Shipping Position o Mechanical Zero).
+
 -Se usa para transporte, calibración o referencia de ejes, no para operaciones de ciclo.
+
 -Es una postura muy “recogida” (el robot compacto, con el brazo hacia atrás).
 
 ![Imagen de WhatsApp 2025-10-26 a las 09 29 12_079ef3eb](https://github.com/user-attachments/assets/c77e97c8-f254-428a-84e5-bd23cd8a9e87)
@@ -56,8 +59,8 @@ ROBOT → SECOND HOME POS → SET
 
 3) **Elegir sistema de coordenadas**
    - Usa el botón **COORD** para alternar:
-     - **JOINT (Articular):** movimiento eje por eje.
-     - **CARTESIANO (XYZ):** traslaciones/rotaciones del TCP en X, Y, Z.
+   - **JOINT (Articular):** movimiento eje por eje.
+   - **CARTESIANO (XYZ):** traslaciones/rotaciones del TCP en X, Y, Z.
 
 4) **Mover en modo articular (JOINT)**
    - Con el **Botón de hombre muerto** en posición intermedia:
