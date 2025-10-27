@@ -163,9 +163,6 @@ RoboDK es un software de simulación y programación offline para robots industr
 https://youtu.be/dSfXGkkfTpw
 
 ## video de simulacion
-
-Video de simulacion lab2.mp4
-[Video de simulacion lab2](./Video2)
-
+https://youtu.be/OEVdYvjtTlk
 
 
