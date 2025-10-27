@@ -165,6 +165,7 @@ https://youtu.be/dSfXGkkfTpw
 ## video de simulacion
 
 Video de simulacion lab2.mp4
-[Video de simulacion lab2](./demo.mp4)
+[Video de simulacion lab2](./Video de simulacion lab2.mp4)
+
 
 
