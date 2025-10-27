@@ -134,7 +134,7 @@ RoboDK es un software de simulación y programación offline para robots industr
   3) Desde RoboDK envías **MoveJ/MoveL** y jog en vivo; el controlador interpola y mueve el robot.  
 
 ### 3) ¿Qué procesos realiza RoboDK para “mover” el Motoman?
-## Procesos que realiza RoboDK para mover un Motoman
+### Procesos que realiza RoboDK para mover un Motoman
 
 ### A) Flujo OFFLINE (exportar código y ejecutar en el robot)
 1) **Modelado**: Cargar robot, herramienta (TCP) y marcos (Base/Usuario); importar CAD si aplica.
