@@ -134,6 +134,30 @@ RoboDK es un software de simulación y programación offline para robots industr
   3) Desde RoboDK envías **MoveJ/MoveL** y jog en vivo; el controlador interpola y mueve el robot.  
 
 ### 3) ¿Qué procesos realiza RoboDK para “mover” el Motoman?
+## Procesos que realiza RoboDK para mover un Motoman
+
+### A) Flujo OFFLINE (exportar código y ejecutar en el robot)
+1) **Modelado**: Cargar robot, herramienta (TCP) y marcos (Base/Usuario); importar CAD si aplica.
+2) **Planificación**: Crear targets y trayectorias (MoveJ/MoveL), definir velocidades, zonas/blends y I/O.
+3) **Simulación**: Comprobar colisiones, singularidades, alcances y tiempos de ciclo.
+4) **Postprocesado**: Convertir la ruta genérica a **INFORM** generando un archivo **.JBI** (post Motoman).
+5) **Transferencia**: Enviar el **.JBI** al controlador (USB/CF o **FTP**).
+6) **Ejecución**: Cargar el **JOB** en el Teach Pendant y ejecutar en **PLAY**.
+7) **Ajuste fino**: Retocar velocidades/zonas o “enseñar” puntos si el fixture real difiere del modelo.
+
+### B) Flujo ONLINE (driver en tiempo real)
+1) **Conexión**: Vincular RoboDK ↔ controlador por **Ethernet** (driver Motoman: HSE/Remote o MotoCom).
+2) **Sincronización**: Confirmar **TCP** y marcos activos (UF/UT) e I/O relevantes.
+3) **Comandos en vivo**: Enviar **jog** y trayectorias (MoveJ/MoveL) desde RoboDK; el controlador interpola y mueve.
+4) **Monitoreo**: Supervisar estado/posiciones; detener/ajustar al vuelo si es necesario.
+5) **(Opcional) Exportar**: Una vez validado, generar el **.JBI** definitivo para producción.
+
+### Qué hace internamente el controlador Motoman (en ambos casos)
+- **Interpreta** el código INFORM (.JBI) o los comandos del driver.
+- **Planifica** la trayectoria (articular/cartesiana) respetando límites y zonas.
+- **Interpola** puntos intermedios y ejecuta lazos de **servo** por eje (J1…J6).
+- **Gestiona I/O** (DOUT/WAIT, etc.) y verifica condiciones de **seguridad** (E-Stop, deadman, cercos).
+
 
 ### 4) ¿Cuándo usar cada método?
 - **Offline (.JBI)**: ciclos repetitivos, producción, control de versiones del código, auditoría.
