@@ -24,23 +24,23 @@
 ## Home1 y Home2
 **HOME1 — posición de transporte o referencia mecánica**
 
--Es la posición base de fábrica (también llamada Shipping Position o Mechanical Zero).
+- Es la posición base de fábrica (también llamada Shipping Position o Mechanical Zero).
 
--Se usa para transporte, calibración o referencia de ejes, no para operaciones de ciclo.
+- Se usa para transporte, calibración o referencia de ejes, no para operaciones de ciclo.
 
--Es una postura muy “recogida” (el robot compacto, con el brazo hacia atrás).
+- Es una postura muy “recogida” (el robot compacto, con el brazo hacia atrás).
 
 ![Imagen de WhatsApp 2025-10-26 a las 09 29 12_079ef3eb](https://github.com/user-attachments/assets/c77e97c8-f254-428a-84e5-bd23cd8a9e87)
 
 
-### HOME2 — posición operativa o de trabajo
--Es la posición de parqueo/espera segura (Second Home Position o Check Point).
+**HOME2 — posición operativa o de trabajo**
+- Es la posición de parqueo/espera segura (Second Home Position o Check Point).
 
--Se enseña manualmente por el integrador o programador para dejar el robot en una postura despejada al iniciar o terminar un ciclo.
+- Se enseña manualmente por el integrador o programador para dejar el robot en una postura despejada al iniciar o terminar un ciclo.
 
--Es la que normalmente se usa en los programas (GO_HOME, CALL HOME2, etc).
+- Es la que normalmente se usa en los programas (GO_HOME, CALL HOME2, etc).
 
--Se puede registrar desde el Teach Pendant en:
+- Se puede registrar desde el Teach Pendant en:
 ROBOT → SECOND HOME POS → SET
 
 ![Imagen de WhatsApp 2025-10-26 a las 09 29 14_87543416](https://github.com/user-attachments/assets/57c8e4c4-440e-4190-be01-67c7c05c50de)
