@@ -35,13 +35,14 @@
 **Pisición de las articulaciones**
 
 | **Eje** | **HOME1 (Transporte / Fábrica)** | **Descripción del movimiento** |
-|----------|----------------------------------|----------------------------------|--------------------------------|
+|----------|----------------------------------|--------------------------------|
 | **S (J1)** | 0.0000° | Giro base, robot centrado frente al eje X. |
 | **L (J2)** | 88.6629° | Brazo inferior hacia atrás en HOME1, vertical en HOME2. |
 | **U (J3)** | -81.0787° | Brazo superior extendido en HOME2. |
 | **R (J4)** | -0.0017° | Eje de muñeca sin giro lateral. |
 | **B (J5)** | 51.7618° | Eje de muñeca centrado. |
-| **T (J6)** | -3.2709° | Herramienta apuntando al frente. |
+| **T (J6)** | -3.2709° | Herramienta apuntando al frente. |
+
 
 **HOME2 — posición operativa o de trabajo**
 - Es la posición de parqueo/espera segura (Second Home Position o Check Point).
@@ -58,13 +59,14 @@ ROBOT → SECOND HOME POS → SET
 **Pisición de las articulaciones**
 
 | **Eje** | **HOME1 (Transporte / Fábrica)** | **Descripción del movimiento** |
-|----------|----------------------------------|----------------------------------|--------------------------------|
+|----------|----------------------------------|--------------------------------|
 | **S (J1)** | 0.0000° | Giro base, robot centrado frente al eje X. |
 | **L (J2)** | -1.5665° | Brazo inferior hacia atrás en HOME1, vertical en HOME2. |
-| **U (J3)** |  1.7135° | Brazo superior extendido en HOME2. |
+| **U (J3)** | 1.7135° | Brazo superior extendido en HOME2. |
 | **R (J4)** | -0.0000° | Eje de muñeca sin giro lateral. |
 | **B (J5)** | -0.1468° | Eje de muñeca centrado. |
-| **T (J6)** | -3.2709° | Herramienta apuntando al frente. |
+| **T (J6)** | -3.2709° | Herramienta apuntando al frente. |
+
 
 ## Movimiento manual — Paso a paso
 
