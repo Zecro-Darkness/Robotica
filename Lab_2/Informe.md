@@ -157,8 +157,11 @@ RoboDK es un software de simulación y programación offline para robots industr
 | **Limitaciones** | No reproduce exactamente los ciclos de control del fabricante (interpolaciones o zonas difieren levemente). | Solo funciona con robots ABB; mayor curva de aprendizaje si vienes de otras marcas. |
 | **Aplicaciones típicas** | Diseño y simulación de células multimarca, optimización de trayectorias, generación de código CNC/robot, educación e investigación. | Programación avanzada ABB (RAPID), validación de rutinas industriales, entrenamiento y mantenimiento virtual. |
 
-## Diagrama de flujo 
+## Diagrama de flujo codigo 
 ![Diagrama de flujo.png](https://github.com/Zecro-Darkness/Robotica/blob/bf44449994bb8289e13ed33504f756c51d0a074f/Diagrama%20de%20flujo.png)
+## Diagrama de flujo codigo acciones del robot
+!(https://github.com/Zecro-Darkness/Robotica/blob/b5c4898bc55b2d2c343f44cc1438da423e244dc5/Lab_2/Imagenes/Diagrama%20de%20flujo%20acciones%20del%20robot.png)
+## Plano de la planta
 # Video
 ## video de laboratorio
 https://youtu.be/dSfXGkkfTpw
