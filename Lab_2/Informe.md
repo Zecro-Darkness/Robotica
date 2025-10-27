@@ -160,7 +160,7 @@ RoboDK es un software de simulación y programación offline para robots industr
 ## Diagrama de flujo codigo 
 ![Diagrama de flujo.png](https://github.com/Zecro-Darkness/Robotica/blob/bf44449994bb8289e13ed33504f756c51d0a074f/Diagrama%20de%20flujo.png)
 ## Diagrama de flujo codigo acciones del robot
-!(https://github.com/Zecro-Darkness/Robotica/blob/b5c4898bc55b2d2c343f44cc1438da423e244dc5/Lab_2/Imagenes/Diagrama%20de%20flujo%20acciones%20del%20robot.png)
+![Diagrama de flujo acciones del robot.png](https://github.com/Zecro-Darkness/Robotica/blob/b5c4898bc55b2d2c343f44cc1438da423e244dc5/Lab_2/Imagenes/Diagrama%20de%20flujo%20acciones%20del%20robot.png)
 ## Plano de la planta
 # Video
 ## video de laboratorio
