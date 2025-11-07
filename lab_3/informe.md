@@ -1,4 +1,4 @@
-<img width="805" height="543" alt="image" src="https://github.com/user-attachments/assets/e1f26017-796c-460c-936f-d12c2b35ad91" /># Comparativo técnico: Motoman MH6 vs. ABB IRB 140 vs. EPSON T3-401S
+># Comparativo técnico: Motoman MH6 vs. ABB IRB 140 vs. EPSON T3-401S
 
 > Nota: Los datos se tomaron de fichas técnicas y catálogos de fabricante/distribuidores.
 
