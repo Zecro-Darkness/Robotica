@@ -61,6 +61,40 @@ use los botones de **J1, J2, J3, J4** (+/–) para girar cada eje. **J3** es lin
 
 # EPSON T3-401S — Niveles de velocidad para movimientos manuales
 
+Enla ventana de **administrador de robot** ingresamos al apartado de mover y enseñar y aqui tenemos dos formas de cambia los niveles de velocidad de robot, ademas en esta misma pestaña podemos identificar el nivel de velocidad actual y son las siguientes:
+
+### 1. Parámetro **Velocidad** (Low / High)
+
 <img width="334" height="107" alt="image" src="https://github.com/user-attachments/assets/2b85942d-0dc0-49c2-9252-bf9a29f764cf" />
 
+En la sección de jog existe un cuadro de selección llamado **Velocidad**, con dos opciones:
+
+- **Low** → Velocidad baja de jog
+  
+- **High** → Velocidad alta de jog
+
+Este parámetro determina **qué tan rápido se mueve el robot** cuando se utilizan los botones de jog en la interfaz.
+
+> En modo TEACH la velocidad máxima está limitada por seguridad, pero dentro de ese límite, el cambio Low/High hace que el movimiento sea más lento o más rápido.
+
+### 2. Parámetro **Distancia de movimiento** (Continuous / Long / Medium / Short)
+
 <img width="427" height="151" alt="image" src="https://github.com/user-attachments/assets/5d5dc5e4-2913-4e04-abae-0f284a287e0a" />
+
+el grupo **Distancia de movimiento**, con las opciones:
+
+- **Continuous** → el robot se mueve mientras el botón de jog esté presionado.
+  
+- **Long** → movimiento por pasos grandes.
+  
+- **Medium** → movimiento por pasos medianos.
+  
+- **Short** → movimiento por pasos muy pequeños.
+
+y si simplemente cambiamos entre estos modos para establecer las velocidades ademas tambien se establece el valor de los pasos en los espacios que dicen **X (mm)**, **Y (mm)**, **Z (mm)** y **U (mm)**
+
+Este parámetro **no cambia la velocidad**, pero sí influye en **cuánto se desplaza el robot por cada acción de jog**, lo que afecta la “sensación” de rapidez y precisión del movimiento.
+
+
+
+
