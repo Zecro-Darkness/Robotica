@@ -1,6 +1,6 @@
-># Comparativo técnico: Motoman MH6 vs. ABB IRB 140 vs. EPSON T3-401S
+# Comparativo técnico: Motoman MH6 vs. ABB IRB 140 vs. EPSON T3-401S
 
-> Nota: Los datos se tomaron de fichas técnicas y catálogos de fabricante/distribuidores.
+ Nota: Los datos se tomaron de fichas técnicas y catálogos de fabricante/distribuidores.
 
 | Característica                           | **Yaskawa Motoman MH6**                               | **ABB IRB 140**                                                                 | **EPSON T3-401S (SCARA)**                                                                 |
 |------------------------------------------|--------------------------------------------------------|----------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
@@ -45,6 +45,7 @@ En este apartado encontraremos los siguiente modos
 ### 1.4 Ejecutar **traslaciones** y **rotaciones**
 
 - En **Joint**
+  
 use los botones de **J1, J2, J3, J4** (+/–) para girar cada eje. **J3** es lineal (Z), **J4** es rotacional (herramienta).
 
 <img width="334" height="400" alt="image" src="https://github.com/user-attachments/assets/b1f9d8fa-0d32-44a6-9b47-3f8fd1fb9d14" />
