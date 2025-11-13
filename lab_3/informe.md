@@ -47,10 +47,13 @@ En este apartado encontraremos los siguiente modos
 En la caja **Mode** elija el sistema de coordenadas:  
 - **Joint** (articulaciones): mueve **cada eje** por separado.
 ### 1.4 Ejecutar **traslaciones** y **rotaciones**
-- En **Joint**: use los botones de **J1, J2, J3, J4** (+/–) para girar cada eje. **J3** es lineal (Z), **J4** es rotacional (herramienta). :contentReference[oaicite:7]{index=7}  
+- En **Joint**: use los botones de **J1, J2, J3, J4** (+/–) para girar cada eje. **J3** es lineal (Z), **J4** es rotacional (herramienta).
+
+- <img width="334" height="400" alt="image" src="https://github.com/user-attachments/assets/b1f9d8fa-0d32-44a6-9b47-3f8fd1fb9d14" />
+
 - En **World/Tool/Local/ECP**:  
-  - **Traslación**: botones **+X/–X, +Y/–Y, +Z/–Z**.  
-  - **Rotación**: **+Rz/–Rz** (para SCARA T3). **Rx/Ry** no afectan al T3. :contentReference[oaicite:8]{index=8}  
-- Para **enseñar puntos**, cambie a la pestaña Teach y almacene la posición actual (P0, P1, …) según su flujo. :contentReference[oaicite:9]{index=9}
-
-
+  - **Traslación**: botones **+X/–X, +Y/–Y, +Z/–Z**.
+     
+  - **Rotación**: +U/–U
+    
+    <img width="337" height="407" alt="image" src="https://github.com/user-attachments/assets/0ac9f029-b436-4e9c-ba3b-ddf93426efa3" />
