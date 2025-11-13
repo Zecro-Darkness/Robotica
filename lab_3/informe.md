@@ -31,19 +31,21 @@
 3. Abrir la ventana de mover y enseñar en **administrador de robot**
 <img width="805" height="543" alt="image" src="https://github.com/user-attachments/assets/956eb79b-c05d-4f57-988d-689c371bf3bf" />
 En este apartado encontraremos los siguiente modos
+
 -Mundo (cartesiano)
+
 -Herramienta (cartesiano)
+
 -Local (cartesiano)
+
 -Articulación (articulaciones)
+
 -ECP (cartesiano)
 
   
 
 En la caja **Mode** elija el sistema de coordenadas:  
-- **Joint** (articulaciones): mueve **cada eje** por separado. :contentReference[oaicite:4]{index=4}  
-- **World / Tool / Local / ECP** (si ECP está habilitado): mueven en el sistema **cartesiano** (X, Y, Z). :contentReference[oaicite:5]{index=5}  
-> Para un SCARA T3, la rotación cartesiana disponible es **Rz** (alrededor de Z); **Rx/Ry** no aplican al manipulador. (Propio de la cinemática SCARA.)
-
+- **Joint** (articulaciones): mueve **cada eje** por separado.
 ### 1.4 Ejecutar **traslaciones** y **rotaciones**
 - En **Joint**: use los botones de **J1, J2, J3, J4** (+/–) para girar cada eje. **J3** es lineal (Z), **J4** es rotacional (herramienta). :contentReference[oaicite:7]{index=7}  
 - En **World/Tool/Local/ECP**:  
