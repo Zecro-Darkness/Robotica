@@ -20,7 +20,7 @@
 
 
 
-# EPSON T3-401S — Procedimiento para movimientos manuales (Jog)
+# EPSON T3-401S — Procedimiento para movimientos manuales
 > Paso a paso para **desplazar el robot manualmente** desde EPSON RC+ (PC) y desde Teach Pendant, cambiando entre **modos articulados** y **cartesianos** y ejecutando **traslaciones** y **rotaciones** en X, Y, Z.
 
 1. Abrir administrador de robot
@@ -57,3 +57,10 @@ use los botones de **J1, J2, J3, J4** (+/–) para girar cada eje. **J3** es lin
 **Rotación**: +U/–U
     
 <img width="337" height="407" alt="image" src="https://github.com/user-attachments/assets/0ac9f029-b436-4e9c-ba3b-ddf93426efa3" />
+
+
+# EPSON T3-401S — Niveles de velocidad para movimientos manuales
+
+<img width="334" height="107" alt="image" src="https://github.com/user-attachments/assets/2b85942d-0dc0-49c2-9252-bf9a29f764cf" />
+
+<img width="427" height="151" alt="image" src="https://github.com/user-attachments/assets/5d5dc5e4-2913-4e04-abae-0f284a287e0a" />
