@@ -18,6 +18,30 @@
 | **Aplicaciones típicas**                 | Manipulación de materiales, ensamblaje, dispensado, soldadura | Soldadura por arco, ensamblaje, limpieza/pintura, tending, manipulación, empaque, desbarbado | Pick & place, inspección, ensamblaje                                                      |
 | **Controlador**                          | — (serie DX)                                           | IRC5 (Compact / Single / Panel)                                                  | Controlador **integrado** (EPSON RC+)                                                     |
 
+# Configuraciones *home* del EPSON T3-401S
+
+En el EPSON T3-401S la referencia básica de **home** es la posición de **0 pulsos** de cada articulación.
+
+En nuestro caso, el eje J1 tiene asignado un valor de **204800 pulsos** en la posición de **home**.  
+Esta elección se hizo siguiendo la recomendación del profesor.
+
+Con esto también queremos mostrar que el *home* **no tiene que ser necesariamente** la posición de 0 pulsos en todos los ejes (aunque esa suele ser la referencia ideal o “mecánica”).  
+El entorno de Epson nos permite **ajustar o redefinir la posición de home de forma sencilla**, aplicando un desplazamiento (offset) sobre los pulsos y usando ese valor como nueva referencia de trabajo.
+
+**Caso ideal**
+
+| Articulación | Tipo / Eje                      | Posición en *home* (0 pulsos)              | Descripción geométrica / funcional                                                                 |
+|--------------|----------------------------------|--------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| **J1**       | Rotación base (primer brazo)     | **J1 = 0°**                                | El brazo 1 se orienta hacia el eje **+X** del sistema de coordenadas del robot.                     |
+| **J2**       | Rotación segundo brazo           | **J2 = 0°**                                | El brazo 2 queda **alineado con el brazo 1**, es decir, el brazo está completamente extendido.      |
+| **J3**       | Eje vertical **Z** (prismático)  | **J3 = 0 mm** (origen / posición superior) | El eje Z está en su **tope superior**. A partir de ahí, los desplazamientos típicos serán hacia abajo (Z−). |
+| **J4**       | Rotación herramienta (flange)    | **J4 = 0°**                                | El eje de la herramienta queda alineado con el segundo brazo, con la orientación “neutra” del flange.       |
+
+**como esta configurado**
+
+<img width="276" height="427" alt="image" src="https://github.com/user-attachments/assets/7bec95d9-513f-4ea5-b648-696de1eea28f" />
+<img width="426" height="320" alt="image" src="https://github.com/user-attachments/assets/6227742d-6c0a-41d1-ab6d-2965d9d9c789" />
+
 
 
 # EPSON T3-401S — Procedimiento para movimientos manuales
@@ -109,5 +133,5 @@ Este parámetro **no cambia la velocidad**, pero sí influye en **cuánto se des
 | **Limitaciones clave**            | - Solo Epson<br>- Simulación 3D menos genérica que RoboDK                                                              | - No es “controlador oficial” de ninguna marca<br>- Depende mucho de postprocesadores<br>- Algunas funciones avanzadas requieren retoques | - Solo ABB<br>- Curva de aprendizaje moderada (RAPID + arquitectura ABB)<br>- Licencias completas son de pago      |
 | **Aplicaciones típicas**           | - Celdas con robots Epson (pick & place, ensamblaje, empaques, visión)<br>- Laboratorios con T3/T6/SCARA Epson         | - Plantas con **varias marcas** de robots<br>- Mecanizado, corte, pulido, pick & place multimarca                          | - Plantas estandarizadas en ABB<br>- Celdas complejas (soldadura, pintura, manipulación avanzada)                  |
 
-
+# Diseño técnico del gripper neumático por vacío
 
