@@ -128,7 +128,151 @@ y si simplemente cambiamos entre estos modos para establecer las velocidades ade
 
 Este parámetro **no cambia la velocidad**, pero sí influye en **cuánto se desplaza el robot por cada acción de jog**, lo que afecta la “sensación” de rapidez y precisión del movimiento.
 
-# Descripci´on de las principales funcionalidades de EPSON RC+ 7.0
+# Funcionalidades principales de EPSON RC+ 7.0
+
+### a) Entorno de desarrollo y control de movimiento
+
+* Para el T3-401S el “entorno de desarrollo” oficial es **EPSON RC+ 7.0** y el lenguaje de programación es **SPEL+**, un lenguaje de robot multitarea. 
+* El controlador interno del robot se encarga del **control simultáneo de las 4 articulaciones**, con servocontrol digital AC y modos de movimiento **PTP (punto a punto)** y **CP (trayectoria continua)**, con velocidad y aceleración programables. RC+ es la interfaz donde tú defines esos movimientos y parámetros. 
+
+En corto: RC+ es donde programas; el controlador del robot es quien realmente interpola trayectorias y cierra los lazos de posición/velocidad.
+
+---
+
+### b) Configuración de conexión PC–controlador
+
+RC+ tiene un diálogo específico: **“PC to Controller Communications”**:
+
+* Paso típico para conectar:
+
+  1. Tener instalado EPSON RC+ 7.0 en el PC. 
+  2. Conectar el PC al manipulador con el **cable USB**. 
+  3. Encender el manipulador.
+  4. Abrir EPSON RC+ 7.0. 
+  5. Menú **Setup → PC to Controller Communications**, seleccionar “No.1 USB” y pulsar **Connect**. 
+* Cuando la conexión se completa, en el estado aparece **“Connected”** y ya puedes usar el sistema de robot desde RC+. 
+
+---
+
+### c) Simulador y robot virtual
+
+RC+ incluye un **simulador**:
+
+* Permite configurar un **robot virtual**, usando un árbol de objetos y propiedades (robot, mesas, piezas, etc.).
+* Puedes seleccionar conexión **Offline**, cargar un modelo “T3-401S”, crear escenas y probar programas sin conectar el robot físico. 
+
+Esto te sirve para depurar trayectorias, lógicas y tiempos de ciclo antes de arriesgar el equipo real.
+
+---
+
+### d) Robot Manager, JOG & TEACH y Home
+
+Dentro de RC+ está el **Robot Manager**, que es el “panel de operación” del robot:
+
+* Permite crear un proyecto nuevo, controlar el robot, ver un panel de control y usar herramientas de operación segura.
+* Con **JOG & TEACH** puedes:
+
+  * Activar motores, mover el robot en modo manual (jog) por ejes o en coordenadas.
+  * Ver las **coordenadas actuales**, definir el **Home** y registrar puntos (P1, P2, …). 
+  * Mandar al robot a un punto con comandos de alto nivel desde la interfaz: **Go, Move, Jump**. 
+
+---
+
+### e) Editor SPEL+, compilación y ventana de RUN
+
+RC+ tiene un editor específico para **SPEL+**:
+
+* Temario: tipos de variables, operadores, comandos básicos, estructura de programas y **primer programa SPEL+**.
+* Hay un botón o tecla **F5** que **compila el programa** y abre la **ventana de RUN**:
+
+  * Ahí puedes fijar la potencia en **Low** sin importar lo que diga el programa.
+  * También puedes establecer un **factor de velocidad máxima** global. 
+* El temario incluye comandos:
+
+  * `Wait`, bucles `Do...Loop`, condicionales, `Print`, bucles `For/While/Until`, lectura y escritura de I/O, **simulación de I/O**, variables globales, funciones y `Pallet`.
+
+---
+
+### f) Supervisión de I/O y mantenimiento
+
+* Desde EPSON RC+ se puede:
+
+  * **Simular entradas digitales** y ver estados de salidas (útil sin PLC ni sensores conectados). 
+  * Ver y editar la **información de mantenimiento** (batería, engrase, etc.) usando **Tools → Maintenance** y los diálogos correspondientes.
+
+---
+
+# ¿Cómo se comunica con el manipulador y qué hace para ejecutar un movimiento?
+
+### a) Comunicación física y lógica
+
+1. **Enlace físico:**
+
+   * T3-401S se conecta al PC por **USB (No.1 USB)**. RC+ abre ese canal usando el diálogo de **PC to Controller Communications**.
+
+2. **Capas lógicas (simplificado):**
+
+   * **RC+ en el PC**:
+
+     * Edita y compila los programas SPEL+.
+     * Envía el programa al controlador interno del robot.
+     * Envía órdenes de “Run/Stop/Home/Jog” y lee estados.
+   * **Controlador del T3**:
+
+     * Interpreta el programa SPEL+.
+     * Convierte comandos como `Move`, `Jump`, `Speed`, `Accel` en trayectorias (PTP o CP) con planificación de velocidad y aceleración. 
+     * Ejecuta los lazos de servocontrol de las 4 articulaciones en tiempo real.
+
+---
+
+### b) Flujo típico para que el robot se mueva
+
+Te lo pongo como “pipeline” de lo que pasa cuando tú haces que el robot vaya de Home a P1:
+
+1. **Conexión:**
+
+   * PC ↔ manipulador por USB, estado “Connected” en RC+. 
+
+2. **Configuración de robot y proyecto:**
+
+   * En RC+ (offline u online) se selecciona el modelo de robot (T3-401S) y se crea un proyecto asociado.
+
+3. **Teach de puntos:**
+
+   * En Robot Manager / JOG & TEACH:
+
+     * Se energizan motores, se mueve el robot a una posición física y se registra como P1, P2, etc.
+     * Se define la postura de **Home** y se guarda. 
+
+4. **Programación:**
+
+   * En el editor SPEL+ escribes algo tipo:
+
+     ```spel
+     Motor On
+     Speed 50
+     Accel 50,50
+     Home
+     Move P1
+     ```
+   * Compilas (F5); RC+ pasa ese código al controlador, que lo almacena en su memoria.
+
+5. **Ejecución:**
+
+   * Desde la ventana de RUN o Robot Manager:
+
+     * RC+ manda la orden de **Run** al controlador.
+     * El controlador activa el servocontrol y calcula la trayectoria Home→P1 según PTP o CP, con los parámetros de `Speed` y `Accel`.
+     * Los lazos de servocontrol en las articulaciones generan las referencias de corriente/velocidad a los motores.
+
+6. **Retroalimentación y estados:**
+
+   * El controlador devuelve a RC+ el estado (Ready, Running, Error, etc.). En sistemas con Remote I/O, también activa salidas lógicas como **Ready**, **Running**, **Error**, que se pueden leer desde un PLC u otro sistema. 
+
+7. **Parada / emergencia (si aplica):**
+
+   * Si se pulsa E-STOP o se pierde el USB sin desconectar, el manual indica que el manipulador se detiene. 
+
 
 # Análisis comparativo entre EPSON RC+ 7.0, RoboDK y RobotStudio
 
