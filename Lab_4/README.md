@@ -10,3 +10,8 @@ Este proyecto consiste en controlar una tortuga dentro de ROS2 utilizando el tec
 - **Turtlesim** instalado.
 - **Workspace `my_turtle_controller`** creado.
 
+## Procedimiento
+
+# Paso 1
+
+El primer paso para la realización de este laboratorio fue instalar Linux. En nuestro caso, optamos por configurar una máquina virtual utilizando **VMware Workstation Player**x, siguiendo el tutorial disponible en el siguiente repositorio: https://github.com/labsir-un/ROB_Intro_Linux
