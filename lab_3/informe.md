@@ -1,4 +1,4 @@
-# Informe lab 2 grupo 1C
+# Informe lab 3 grupo 1C
 
 ## Integrantes
 
@@ -293,14 +293,24 @@ Te lo pongo como “pipeline” de lo que pasa cuando tú haces que el robot vay
 # Diagrama de flujo
 
 <img width="415" height="2880" alt="Untitled diagram-2025-11-21-064623" src="https://github.com/user-attachments/assets/9c305108-e75f-4805-9d2e-dc83fde7069e" />
-...
+
+
+
 <img width="385" height="3296" alt="Untitled diagram-2025-11-21-064633" src="https://github.com/user-attachments/assets/8873e951-8c98-450c-8ba3-9eda48807e5b" />
-...
+
+
+
 <img width="385" height="2854" alt="Untitled diagram-2025-11-21-064639" src="https://github.com/user-attachments/assets/e75fdaac-408f-41ec-8521-392d9783fef9" />
-...
+
+
+
 <img width="385" height="2884" alt="Untitled diagram-2025-11-21-064646" src="https://github.com/user-attachments/assets/dc8879d6-7968-444a-b52a-21f4aa44bd2e" />
-...
+
+
+
 <img width="412" height="2522" alt="Untitled diagram-2025-11-21-064912" src="https://github.com/user-attachments/assets/94e81645-6722-4543-8265-3317550f7319" />
+
+
 
 
 # Plano de planta
