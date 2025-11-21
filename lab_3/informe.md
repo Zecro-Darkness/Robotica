@@ -31,6 +31,7 @@
 En el EPSON T3-401S la referencia básica de **home** es la posición de **0 pulsos** de cada articulación.
 
 En nuestro caso, el eje J1 tiene asignado un valor de **204800 pulsos** en la posición de **home**.  
+
 Esta elección se hizo siguiendo la recomendación del profesor.
 
 Con esto también queremos mostrar que el *home* **no tiene que ser necesariamente** la posición de 0 pulsos en todos los ejes (aunque esa suele ser la referencia ideal o “mecánica”).  
@@ -127,6 +128,8 @@ y si simplemente cambiamos entre estos modos para establecer las velocidades ade
 
 Este parámetro **no cambia la velocidad**, pero sí influye en **cuánto se desplaza el robot por cada acción de jog**, lo que afecta la “sensación” de rapidez y precisión del movimiento.
 
+# Descripci´on de las principales funcionalidades de EPSON RC+ 7.0
+
 # Análisis comparativo entre EPSON RC+ 7.0, RoboDK y RobotStudio
 
 | Aspecto / Criterio                  | **EPSON RC+ 7.0**                                                                                                      | **RoboDK**                                                                                                                  | **RobotStudio (ABB)**                                                                                              |
@@ -142,4 +145,7 @@ Este parámetro **no cambia la velocidad**, pero sí influye en **cuánto se des
 | **Aplicaciones típicas**           | - Celdas con robots Epson (pick & place, ensamblaje, empaques, visión)<br>- Laboratorios con T3/T6/SCARA Epson         | - Plantas con **varias marcas** de robots<br>- Mecanizado, corte, pulido, pick & place multimarca                          | - Plantas estandarizadas en ABB<br>- Celdas complejas (soldadura, pintura, manipulación avanzada)                  |
 
 # Diseño técnico del gripper neumático por vacío
+# Diagrama de flujo
+
+# Plano de planta
 
