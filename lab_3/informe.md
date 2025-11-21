@@ -1,3 +1,11 @@
+# Informe lab 2 grupo 1C
+
+## Integrantes
+
+- Juan Manuel Beltran Botello 
+- Alejandro Mendivelso Torres
+- Oscar Jhondairo Siabato Leon
+  
 # Comparativo técnico: Motoman MH6 vs. ABB IRB 140 vs. EPSON T3-401S
 
  Nota: Los datos se tomaron de fichas técnicas y catálogos de fabricante/distribuidores.
