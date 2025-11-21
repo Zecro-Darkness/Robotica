@@ -314,4 +314,8 @@ Te lo pongo como “pipeline” de lo que pasa cuando tú haces que el robot vay
 
 
 # Plano de planta
+# Video
+## Simulacion
+https://youtu.be/NJ_B73AV66c
+## laboratoria
 
