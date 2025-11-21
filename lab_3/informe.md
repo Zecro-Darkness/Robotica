@@ -292,10 +292,7 @@ Te lo pongo como “pipeline” de lo que pasa cuando tú haces que el robot vay
 
 # Diagrama de flujo
 
-<img width="1713" height="3014" alt="Diagrama de flujo" src="https://github.com/user-attachments/assets/f98356f1-9fb1-4543-8d3f-7b3718db42f8" />
-
-
-
+<img width="496" height="13836" alt="Untitled diagram-2025-11-21-055317" src="https://github.com/user-attachments/assets/3780d23f-be2c-4fa0-927c-b2835e7b7a73" />
 
 # Plano de planta
 
