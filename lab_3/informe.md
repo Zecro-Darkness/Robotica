@@ -145,7 +145,13 @@ Este parámetro **no cambia la velocidad**, pero sí influye en **cuánto se des
 | **Aplicaciones típicas**           | - Celdas con robots Epson (pick & place, ensamblaje, empaques, visión)<br>- Laboratorios con T3/T6/SCARA Epson         | - Plantas con **varias marcas** de robots<br>- Mecanizado, corte, pulido, pick & place multimarca                          | - Plantas estandarizadas en ABB<br>- Celdas complejas (soldadura, pintura, manipulación avanzada)                  |
 
 # Diseño técnico del gripper neumático por vacío
+
 # Diagrama de flujo
+
+<img width="1713" height="3014" alt="Diagrama de flujo" src="https://github.com/user-attachments/assets/f98356f1-9fb1-4543-8d3f-7b3718db42f8" />
+
+
+
 
 # Plano de planta
 
