@@ -290,6 +290,21 @@ Te lo pongo como “pipeline” de lo que pasa cuando tú haces que el robot vay
 
 # Diseño técnico del gripper neumático por vacío
 
+En esta sección se describe el diseño técnico del gripper neumático por vacío utilizado en el sistema, incluyendo el diagrama esquemático, los componentes principales y la configuración de las entradas/salidas digitales del robot.
+
+### Diagrama esquemático
+
+
+### Componentes utilizados
+
+Los componentes principales del gripper neumático por vacío son:
+
+- Ventosa de la marca festo
+- venturi
+- Válvula solenoide 24 VDC: `<<modelo o referencia>>`
+- Mangueras neumáticas y racores: `<<diámetro / tipo>>`
+- Fuente de aire comprimido: `<<presión de trabajo (ej. 6 bar)>>`
+- Elementos de montaje mecánico para fijar el gripper al efector final del robot.
 # Diagrama de flujo
 
 <img width="415" height="2880" alt="Untitled diagram-2025-11-21-064623" src="https://github.com/user-attachments/assets/9c305108-e75f-4805-9d2e-dc83fde7069e" />
