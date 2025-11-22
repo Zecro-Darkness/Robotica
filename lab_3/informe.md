@@ -331,9 +331,10 @@ Los componentes principales del gripper neumático por vacío son:
 # Plano de planta
 
 <img width="903" height="904" alt="Ensamble v4" src="https://github.com/user-attachments/assets/220eedff-2729-4b8e-ad43-f70200c3a808" />
-![Ensamble Dibujo v1_page-0001](https://github.com/user-attachments/assets/de81e91c-9e9a-4684-8921-4aa7b455e6de)
-![Ensamble Dibujo v1_page-0002](https://github.com/user-attachments/assets/7ecdcaf9-f7ac-4850-a7a7-04aa321821bf)
 
+<img width="2482" height="1755" alt="Ensamble Dibujo v1_page-0001" src="https://github.com/user-attachments/assets/567cfaaf-eb48-481e-ae9d-67fc6a96f962" />
+
+<img width="2482" height="1755" alt="Ensamble Dibujo v1_page-0002" src="https://github.com/user-attachments/assets/0a817eb0-25f9-465b-894d-0c709ec552bb" />
 
 # Video
 ## Simulacion
