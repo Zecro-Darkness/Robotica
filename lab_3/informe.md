@@ -316,7 +316,7 @@ Los componentes principales del gripper neumático por vacío son:
 - Fuente de aire comprimido: `<<presión de trabajo (ej. 6 bar)>>`
 - Elementos de montaje mecánico para fijar el gripper al efector final del robot.
 
-Los **planos del soporte** lo pueden observar en el archvo que se llama planos
+Los **planos del soporte** lo pueden observar en el archvo que se llama **Planos_Gripper.pdf**.
 
 # Diagrama de flujo
 
