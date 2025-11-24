@@ -294,7 +294,17 @@ En esta sección se describe el diseño técnico del gripper neumático por vac�
 
 ### Diagrama esquemático
 
+<img width="372" height="83" alt="robotica drawio" src="https://github.com/user-attachments/assets/f80f91d8-7988-484a-85ee-b114e9c29a5b" />
 
+### Configuración de E/S digitales del robot
+
+El accionamiento del gripper se realiza mediante una salida digital del controlador del robot, conectada a la bobina de la válvula solenoide:
+
+- **Salida digital usada**: Out_9.
+- **Función**:
+  - **ON:** activa la válvula solenoide, genera vacío y la ventosa sujeta la pieza.
+  - **OFF:** desactiva la válvula, se pierde el vacío y la pieza se libera.
+  - 
 ### Componentes utilizados
 
 Los componentes principales del gripper neumático por vacío son:
