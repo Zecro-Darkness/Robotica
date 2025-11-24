@@ -8,6 +8,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose   # Para leer la orientación
 
+
 class TurtleController(Node):
     def __init__(self):
         super().__init__('turtle_controller')
@@ -20,19 +21,21 @@ class TurtleController(Node):
         # Paso de tiempo del timer
         self.dt = 0.05
 
+        # Tolerancia para considerar que ya estamos apuntando al ángulo deseado
+        self.angle_tolerance = 0.02
+
         # Velocidades generales (O, J, L, M, B, A, T)
         self.v = 1.0
         self.omega = 1.2  # rad/s
 
-                # Parámetros específicos para la letra O (círculo)
-        self.v_o = 1.25      # para que el radio sea 1.25 y el diámetro 2.5
-        self.omega_o = 1.2  # mantenemos la misma omega
+        # Parámetros específicos para la letra O (círculo)
+        # (Ojo: aquí mandas tú: v_o y omega_o definen el radio de la O)
+        self.v_o = 1.25       # para que el radio sea ~v_o/omega_o
+        self.omega_o = 1.2    # mantenemos la misma omega
 
-                # Parámetros específicos para el gancho de la J
+        # Parámetros específicos para el gancho de la J
         self.v_j_arc = 0.67       # velocidad más pequeña → radio más chico
         self.omega_j_arc = self.omega  # usamos la misma omega (1.2)
-
-
 
         # Velocidades específicas para la S
         self.v_s = 1.0
@@ -59,37 +62,26 @@ class TurtleController(Node):
 
         v_vert = self.v * 0.8
         H_b = v_vert * self.b_vertical_time          # longitud del tramo vertical de la B
-        radius_b = H_b / 4.0                         # diámetro = H/2
+        radius_b = H_b / 4.0                         # diámetro total = H/2
 
         self.b_arc_omega = self.omega
         self.b_arc_v = radius_b * self.b_arc_omega   # v = r * ω
-        self.b_arc_time = math.pi / abs(self.b_arc_omega)  # semicirculo
+        self.b_arc_time = math.pi / abs(self.b_arc_omega)  # semicírculo
 
         # ---- Parámetros de la A ----
         self.a_diag_time = 2.89
         self.a_back_half_time = self.a_diag_time / 2.0
-        # Barra horizontal: 3/4 del largo de la diagonal (tu cambio)
+        # Barra horizontal: factor de la diagonal (ajustado por ti)
         self.a_bar_time = self.a_diag_time * 0.65
 
         # ---- Parámetros de la T ----
         self.t_vertical_time = 2.5
-        # barra izquierda: 1/4 del vertical
+        # barra izquierda: ~1/4 del vertical (ajustado por ti)
         self.t_bar_quarter_time = self.t_vertical_time * 0.40
-        # barra derecha: 1/2 del vertical
+        # barra derecha: ~1/2 del vertical (ajustado por ti)
         self.t_bar_half_time = self.t_vertical_time * 0.9
 
         # Estado del movimiento
-        # circle,
-        # j_orient, j_step1, j_step2,
-        # l_orient, l_step1, l_orient2, l_step2,
-        # m_orient1, m_step1, m_orient2, m_step2,
-        # m_orient3, m_step3, m_orient4, m_step4,
-        # b_orient1, b_step1, b_orient2, b_arc1,
-        # b_orient3, b_step2, b_orient4, b_arc2,
-        # a_orient1, a_step1, a_orient2, a_step2,
-        # a_orient3, a_step3, a_orient4, a_step4,
-        # t_orient1, t_step1, t_orient2, t_step2, t_orient3, t_step3,
-        # s_step0, s_step1, s_step2, s_step3, s_step4
         self.state = None
         self.end_time = 0.0
 
@@ -138,6 +130,23 @@ class TurtleController(Node):
         while diff < -math.pi:
             diff += 2.0 * math.pi
         return diff
+
+    # Helper genérico para todas las orientaciones
+    def _rotate_and_schedule(self, target, next_state, next_duration, log_msg):
+        """Gira hacia 'target'; cuando llega, pasa a next_state y programa next_duration."""
+        if self.current_theta is None:
+            return  # aún no tenemos pose
+
+        error = self.angle_diff(target, self.current_theta)
+        if abs(error) < self.angle_tolerance:
+            self.state = next_state
+            self.end_time = time.monotonic() + next_duration
+            self.get_logger().info(log_msg)
+            self._publish_stop()
+        else:
+            msg = Twist()
+            msg.angular.z = self.omega if error > 0 else -self.omega
+            self.publisher_.publish(msg)
 
     # ----------------------------- TECLADO -----------------------------
     def _keyboard_loop(self):
@@ -302,19 +311,12 @@ class TurtleController(Node):
 
         # ===================== LETRA J =====================
         if self.state == "j_orient":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.target_down, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "j_step1"
-                self.end_time = time.monotonic() + self.j_straight_time
-                self.get_logger().info("→ Trazo vertical de la J.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.target_down,
+                next_state="j_step1",
+                next_duration=self.j_straight_time,
+                log_msg="→ Trazo vertical de la J."
+            )
             return
 
         if self.state == "j_step1":
@@ -322,10 +324,10 @@ class TurtleController(Node):
                 self.state = "j_step2"
                 self.end_time = time.monotonic() + (math.pi / abs(self.omega))
                 self.get_logger().info("→ Curva inferior de la J.")
+                self._publish_stop()
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
@@ -341,19 +343,12 @@ class TurtleController(Node):
 
         # ===================== LETRA L =====================
         if self.state == "l_orient":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.target_down, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "l_step1"
-                self.end_time = time.monotonic() + self.l_vertical_time
-                self.get_logger().info("→ Trazo vertical de la L.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.target_down,
+                next_state="l_step1",
+                next_duration=self.l_vertical_time,
+                log_msg="→ Trazo vertical de la L."
+            )
             return
 
         if self.state == "l_step1":
@@ -364,24 +359,16 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         if self.state == "l_orient2":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.target_right, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "l_step2"
-                self.end_time = time.monotonic() + self.l_horizontal_time
-                self.get_logger().info("→ Trazo horizontal de la L.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.target_right,
+                next_state="l_step2",
+                next_duration=self.l_horizontal_time,
+                log_msg="→ Trazo horizontal de la L."
+            )
             return
 
         if self.state == "l_step2":
@@ -390,25 +377,17 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         # ===================== LETRA M =====================
         if self.state == "m_orient1":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.m_target_up, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "m_step1"
-                self.end_time = time.monotonic() + self.m_vertical_time
-                self.get_logger().info("→ Primer tramo vertical de la M (hacia arriba).")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.m_target_up,
+                next_state="m_step1",
+                next_duration=self.m_vertical_time,
+                log_msg="→ Primer tramo vertical de la M (hacia arriba)."
+            )
             return
 
         if self.state == "m_step1":
@@ -419,24 +398,16 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         if self.state == "m_orient2":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.m_target_diag1, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "m_step2"
-                self.end_time = time.monotonic() + self.m_diag_time
-                self.get_logger().info("→ Primer tramo diagonal de la M.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.m_target_diag1,
+                next_state="m_step2",
+                next_duration=self.m_diag_time,
+                log_msg="→ Primer tramo diagonal de la M."
+            )
             return
 
         if self.state == "m_step2":
@@ -447,24 +418,16 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         if self.state == "m_orient3":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.m_target_diag2, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "m_step3"
-                self.end_time = time.monotonic() + self.m_diag_time
-                self.get_logger().info("→ Segundo tramo diagonal de la M.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.m_target_diag2,
+                next_state="m_step3",
+                next_duration=self.m_diag_time,
+                log_msg="→ Segundo tramo diagonal de la M."
+            )
             return
 
         if self.state == "m_step3":
@@ -475,24 +438,16 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         if self.state == "m_orient4":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.m_target_down, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "m_step4"
-                self.end_time = time.monotonic() + self.m_vertical_time
-                self.get_logger().info("→ Último tramo vertical de la M (hacia abajo).")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.m_target_down,
+                next_state="m_step4",
+                next_duration=self.m_vertical_time,
+                log_msg="→ Último tramo vertical de la M (hacia abajo)."
+            )
             return
 
         if self.state == "m_step4":
@@ -501,25 +456,17 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         # ===================== LETRA B =====================
         if self.state == "b_orient1":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.b_target_up, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "b_step1"
-                self.end_time = time.monotonic() + self.b_vertical_time
-                self.get_logger().info("→ Tramo vertical de la B (espina).")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.b_target_up,
+                next_state="b_step1",
+                next_duration=self.b_vertical_time,
+                log_msg="→ Tramo vertical de la B (espina)."
+            )
             return
 
         if self.state == "b_step1":
@@ -530,24 +477,16 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8   # hacia arriba
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         if self.state == "b_orient2":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.b_target_right, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "b_arc1"
-                self.end_time = time.monotonic() + self.b_arc_time
-                self.get_logger().info("→ Primer semicírculo de la B (lóbulo superior).")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.b_target_right,
+                next_state="b_arc1",
+                next_duration=self.b_arc_time,
+                log_msg="→ Primer semicírculo de la B (lóbulo superior)."
+            )
             return
 
         if self.state == "b_arc1":
@@ -563,19 +502,12 @@ class TurtleController(Node):
             return
 
         if self.state == "b_orient3":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.b_target_down, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "b_step2"
-                self.end_time = time.monotonic() + self.b_mid_down_time
-                self.get_logger().info("→ Pequeño tramo entre lóbulos de la B.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.b_target_down,
+                next_state="b_step2",
+                next_duration=self.b_mid_down_time,
+                log_msg="→ Pequeño tramo entre lóbulos de la B."
+            )
             return
 
         if self.state == "b_step2":
@@ -586,24 +518,16 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8   # hacia abajo (muy poco tiempo)
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         if self.state == "b_orient4":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.b_target_right, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "b_arc2"
-                self.end_time = time.monotonic() + self.b_arc_time
-                self.get_logger().info("→ Segundo semicírculo de la B (lóbulo inferior).")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.b_target_right,
+                next_state="b_arc2",
+                next_duration=self.b_arc_time,
+                log_msg="→ Segundo semicírculo de la B (lóbulo inferior)."
+            )
             return
 
         if self.state == "b_arc2":
@@ -618,19 +542,12 @@ class TurtleController(Node):
 
         # ===================== LETRA A =====================
         if self.state == "a_orient1":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.a_target_diag1, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "a_step1"
-                self.end_time = time.monotonic() + self.a_diag_time
-                self.get_logger().info("→ Primer tramo diagonal de la A.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.a_target_diag1,
+                next_state="a_step1",
+                next_duration=self.a_diag_time,
+                log_msg="→ Primer tramo diagonal de la A."
+            )
             return
 
         if self.state == "a_step1":
@@ -641,24 +558,16 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         if self.state == "a_orient2":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.a_target_diag2, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "a_step2"
-                self.end_time = time.monotonic() + self.a_diag_time
-                self.get_logger().info("→ Segundo tramo diagonal de la A.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.a_target_diag2,
+                next_state="a_step2",
+                next_duration=self.a_diag_time,
+                log_msg="→ Segundo tramo diagonal de la A."
+            )
             return
 
         if self.state == "a_step2":
@@ -669,24 +578,16 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         if self.state == "a_orient3":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.a_target_back, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "a_step3"
-                self.end_time = time.monotonic() + self.a_back_half_time
-                self.get_logger().info("→ Volviendo hasta la mitad de la segunda diagonal.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.a_target_back,
+                next_state="a_step3",
+                next_duration=self.a_back_half_time,
+                log_msg="→ Volviendo hasta la mitad de la segunda diagonal."
+            )
             return
 
         if self.state == "a_step3":
@@ -697,24 +598,16 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         if self.state == "a_orient4":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.a_target_bar, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "a_step4"
-                self.end_time = time.monotonic() + self.a_bar_time
-                self.get_logger().info("→ Barra horizontal de la A.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.a_target_bar,
+                next_state="a_step4",
+                next_duration=self.a_bar_time,
+                log_msg="→ Barra horizontal de la A."
+            )
             return
 
         if self.state == "a_step4":
@@ -723,29 +616,19 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
         # ===================== LETRA T =====================
-        # 1) Orientar hacia arriba
         if self.state == "t_orient1":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.t_target_up, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "t_step1"
-                self.end_time = time.monotonic() + self.t_vertical_time
-                self.get_logger().info("→ Tramo vertical de la T.")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.t_target_up,
+                next_state="t_step1",
+                next_duration=self.t_vertical_time,
+                log_msg="→ Tramo vertical de la T."
+            )
             return
 
-        # 2) Tramo vertical
         if self.state == "t_step1":
             if now >= self.end_time:
                 self.state = "t_orient2"
@@ -754,28 +637,18 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8   # hacia arriba
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
-        # 3) Orientar hacia la izquierda
         if self.state == "t_orient2":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.t_target_left, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "t_step2"
-                self.end_time = time.monotonic() + self.t_bar_quarter_time
-                self.get_logger().info("→ Barra horizontal hacia la izquierda (1/4).")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.t_target_left,
+                next_state="t_step2",
+                next_duration=self.t_bar_quarter_time,
+                log_msg="→ Barra horizontal hacia la izquierda (1/4)."
+            )
             return
 
-        # 4) Tramo horizontal hacia la izquierda (1/4)
         if self.state == "t_step2":
             if now >= self.end_time:
                 self.state = "t_orient3"
@@ -784,50 +657,38 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8   # hacia la izquierda
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
-        # 5) Orientar hacia la derecha (180° desde izquierda)
         if self.state == "t_orient3":
-            if self.current_theta is None:
-                return
-            error = self.angle_diff(self.t_target_right, self.current_theta)
-            if abs(error) < 0.02:
-                self.state = "t_step3"
-                self.end_time = time.monotonic() + self.t_bar_half_time
-                self.get_logger().info("→ Barra horizontal hacia la derecha (1/2).")
-                self._publish_stop()
-            else:
-                msg = Twist()
-                msg.linear.x = 0.0
-                msg.angular.z = self.omega if error > 0 else -self.omega
-                self.publisher_.publish(msg)
+            self._rotate_and_schedule(
+                target=self.t_target_right,
+                next_state="t_step3",
+                next_duration=self.t_bar_half_time,
+                log_msg="→ Barra horizontal hacia la derecha (1/2)."
+            )
             return
 
-        # 6) Tramo horizontal hacia la derecha (1/2)
         if self.state == "t_step3":
             if now >= self.end_time:
                 self.stop_movement("Letra T completada.")
             else:
                 msg = Twist()
                 msg.linear.x = self.v * 0.8   # hacia la derecha
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
-        # ===================== LETRA S (igual que antes) =====================
-
+        # ===================== LETRA S =====================
         if self.state == "s_step0":
             if now >= self.end_time:
                 self.state = "s_step1"
                 T_arc = math.pi / abs(self.omega_s)
                 self.end_time = time.monotonic() + T_arc
                 self.get_logger().info("→ Primer semicírculo de la S.")
+                self._publish_stop()
             else:
                 msg = Twist()
                 msg.linear.x = self.v_s
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
@@ -837,6 +698,7 @@ class TurtleController(Node):
                 T_straight_mid = (math.pi / abs(self.omega_s)) / 6.0
                 self.end_time = time.monotonic() + T_straight_mid
                 self.get_logger().info("→ Tramo recto central de la S.")
+                self._publish_stop()
             else:
                 msg = Twist()
                 msg.linear.x = self.v_s
@@ -850,10 +712,10 @@ class TurtleController(Node):
                 T_arc = math.pi / abs(self.omega_s)
                 self.end_time = time.monotonic() + T_arc
                 self.get_logger().info("→ Segundo semicírculo de la S.")
+                self._publish_stop()
             else:
                 msg = Twist()
                 msg.linear.x = self.v_s
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
@@ -862,6 +724,7 @@ class TurtleController(Node):
                 self.state = "s_step4"
                 self.end_time = time.monotonic() + self.T_s_straight
                 self.get_logger().info("→ Tramo recto final de la S.")
+                self._publish_stop()
             else:
                 msg = Twist()
                 msg.linear.x = self.v_s
@@ -875,7 +738,6 @@ class TurtleController(Node):
             else:
                 msg = Twist()
                 msg.linear.x = self.v_s
-                msg.angular.z = 0.0
                 self.publisher_.publish(msg)
             return
 
@@ -887,6 +749,7 @@ class TurtleController(Node):
 
     def _publish_stop(self):
         self.publisher_.publish(Twist())
+
 
 def main(args=None):
     rclpy.init(args=args)
@@ -901,6 +764,6 @@ def main(args=None):
         node.destroy_node()
         rclpy.shutdown()
 
+
 if __name__ == '__main__':
     main()
-
