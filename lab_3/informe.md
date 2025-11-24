@@ -304,7 +304,7 @@ El accionamiento del gripper se realiza mediante una salida digital del controla
 - **Función**:
   - **ON:** activa la válvula solenoide, genera vacío y la ventosa sujeta la pieza.
   - **OFF:** desactiva la válvula, se pierde el vacío y la pieza se libera.
-  - 
+    
 ### Componentes utilizados
 
 Los componentes principales del gripper neumático por vacío son:
@@ -315,6 +315,9 @@ Los componentes principales del gripper neumático por vacío son:
 - Mangueras neumáticas y racores: `<<diámetro / tipo>>`
 - Fuente de aire comprimido: `<<presión de trabajo (ej. 6 bar)>>`
 - Elementos de montaje mecánico para fijar el gripper al efector final del robot.
+
+Los **planos del soporte** lo pueden observar en el archvo que se llama planos
+
 # Diagrama de flujo
 
 <img width="415" height="2880" alt="Untitled diagram-2025-11-21-064623" src="https://github.com/user-attachments/assets/9c305108-e75f-4805-9d2e-dc83fde7069e" />
