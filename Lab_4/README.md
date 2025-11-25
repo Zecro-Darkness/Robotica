@@ -19,3 +19,54 @@ El primer paso para la realización de este laboratorio fue instalar Linux. En n
 ### Paso 2 
 
 El siguiente paso consistió en la instalación de ROS2. Para ello, seguimos el tutorial proporcionado en el siguiente repositorio: https://github.com/labsir-un/ROB_Intro_ROS2_Humble. Este proceso incluyó la instalación de **Visual Studio Code**, **Terminator**, y la configuración del locale. Además, configuramos las fuentes de ROS2 Humble, realizamos la instalación de ROS2 Humble, y verificamos su funcionamiento ejecutando un ejemplo básico de talker-listener.
+
+
+## Diagrama de flujo
+
+### Codigo control manual
+El codigo en mermaid es
+```mermaid
+flowchart TD
+    A[Inicio] --> B[main]
+    B --> C[Inicializar rclpy]
+    C --> D[Crear nodo]
+    D --> E[Configurar publicador Twist]
+    E --> F[Iniciar hilo lector]
+
+    F --> G{Tecla?}
+    G -->|No| G
+    G -->|Sí| H[Leer tecla]
+
+    H --> I{Arriba?}
+    I -->|Sí| J[Velocidad adelante]
+    I -->|No| K{Abajo?}
+
+    K -->|Sí| L[Velocidad atrás]
+    K -->|No| M{Izquierda?}
+
+    M -->|Sí| N[Giro izquierda]
+    M -->|No| O{Derecha?}
+
+    O -->|Sí| P[Giro derecha]
+    O -->|No| Q{Space?}
+
+    Q -->|Sí| R[Detener]
+    Q -->|No| G
+
+    J --> S[Publicar comando]
+    L --> S
+    N --> S
+    P --> S
+    R --> S
+    S --> G
+
+    G -->|Ctrl+C| T[Detener nodo]
+    T --> U[Publicar stop final]
+    U --> V[Destruir nodo]
+    V --> W[Shutdown]
+    W --> X[Fin]
+
+```
+![Diagrama de flujo](Diagrama1.png)
+
+### Codigo letras
