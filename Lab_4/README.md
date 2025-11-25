@@ -80,36 +80,138 @@ El codigo en mermaid es
 ```mermaid
 flowchart TD
 
-    A[Inicio] --> B[main]
-    B --> C[Inicializar rclpy]
-    C --> D[Crear TurtleController]
-    D --> E[Suscribirse a pose de la tortuga]
-    E --> F[Configurar publicador a cmd_vel]
-    F --> G[Esperar comandos de letras]
+%% ================================================
+%% BLOQUE PRINCIPAL
+%% ================================================
 
-    G --> H{¿Letra T?}
-    H -->|Sí| T1[Verificar si tortuga está lista]
-    T1 --> T2[Calcular ángulos objetivo: arriba, izquierda, derecha]
-    T2 --> T3[Ejecutar rotaciones]
-    T3 --> T4[Ejecutar movimientos lineales]
-    T4 --> R[Publicar stop]
-    H -->|No| I1{¿Letra I?}
+A[Inicio] --> B[main]
+B --> C[Inicializar rclpy]
+C --> D[Crear TurtleController]
+D --> E[Suscribirse a pose]
+E --> F[Configurar publicador cmd_vel]
+F --> G[Esperar letra recibida]
 
-    I1 -->|Sí| I2[Verificar pose]
-    I2 --> I3[Calcular trayecto recto]
-    I3 --> I4[Ejecutar movimiento vertical]
-    I4 --> R
+G --> H{¿Qué letra llegó?}
 
-    I1 -->|No| L1{¿Letra L?}
+%% ================================================
+%% LETRA O (CÍRCULO)
+%% ================================================
 
-    L1 -->|Sí| L2[Verificar pose]
-    L2 --> L3[Bajar verticalmente]
-    L3 --> L4[Avanzar horizontalmente]
-    L4 --> R
+H -->|O| O1[¿Pose disponible?]
+O1 -->|No| G
+O1 -->|Sí| O2[Calcular trayectoria circular]
+O2 --> O3[Rotar incrementalmente]
+O3 --> O4[Avanzar en pequeñas líneas formando círculo]
+O4 --> O5[Repetir hasta 360°]
+O5 --> O6[STOP]
+O6 --> G
 
-    L1 -->|No| G
+%% ================================================
+%% LETRA J
+%% ================================================
 
-    R --> G
+H -->|J| J1[¿Pose disponible?]
+J1 -->|No| G
+J1 -->|Sí| J2[Rotar hacia arriba]
+J2 --> J3[Avanzar trazo vertical]
+J3 --> J4[Rotar derecha]
+J4 --> J5[Avanzar base curva]
+J5 --> J6[Rotar abajo]
+J6 --> J7[Completar curva inferior]
+J7 --> J8[STOP]
+J8 --> G
+
+%% ================================================
+%% LETRA S
+%% ================================================
+
+H -->|S| S1[¿Pose disponible?]
+S1 -->|No| G
+S1 -->|Sí| S2[Rotar izquierda]
+S2 --> S3[Avanzar trazo superior]
+S3 --> S4[Rotar abajo]
+S4 --> S5[Avanzar curva central]
+S5 --> S6[Rotar derecha]
+S6 --> S7[Avanzar trazo inferior]
+S7 --> S8[STOP]
+S8 --> G
+
+%% ================================================
+%% LETRA L
+%% ================================================
+
+H -->|L| L1[¿Pose disponible?]
+L1 -->|No| G
+L1 -->|Sí| L2[Rotar abajo]
+L2 --> L3[Avanzar trazo vertical]
+L3 --> L4[Rotar derecha]
+L4 --> L5[Avanzar trazo base]
+L5 --> L6[STOP]
+L6 --> G
+
+%% ================================================
+%% LETRA M
+%% ================================================
+
+H -->|M| M1[¿Pose disponible?]
+M1 -->|No| G
+M1 -->|Sí| M2[Rotar arriba]
+M2 --> M3[Avanzar pata izquierda]
+M3 --> M4[Rotar diagonal derecha]
+M4 --> M5[Avanzar pico central]
+M5 --> M6[Rotar diagonal izquierda]
+M6 --> M7[Avanzar segundo pico]
+M7 --> M8[Rotar abajo]
+M8 --> M9[Avanzar pata derecha]
+M9 --> M10[STOP]
+M10 --> G
+
+%% ================================================
+%% LETRA B
+%% ================================================
+
+H -->|B| B1[¿Pose disponible?]
+B1 -->|No| G
+B1 -->|Sí| B2[Rotar arriba]
+B2 --> B3[Avanzar línea principal]
+B3 --> B4[Rotar derecha]
+B4 --> B5[Formar curva superior]
+B5 --> B6[Rotar derecha]
+B6 --> B7[Formar curva inferior]
+B7 --> B8[STOP]
+B8 --> G
+
+%% ================================================
+%% LETRA A
+%% ================================================
+
+H -->|A| A1[¿Pose disponible?]
+A1 -->|No| G
+A1 -->|Sí| A2[Rotar diagonal izquierda]
+A2 --> A3[Avanzar pata izquierda]
+A3 --> A4[Rotar diagonal derecha]
+A4 --> A5[Avanzar pata derecha]
+A5 --> A6[Rotar horizontal]
+A6 --> A7[Avanzar línea del medio]
+A7 --> A8[STOP]
+A8 --> G
+
+%% ================================================
+%% LETRA T
+%% ================================================
+
+H -->|T| T1[¿Pose disponible?]
+T1 -->|No| G
+T1 -->|Sí| T2[Rotar arriba]
+T2 --> T3[Avanzar trazo vertical]
+T3 --> T4[Retroceder al centro]
+T4 --> T5[Rotar izquierda]
+T5 --> T6[Avanzar barra izquierda]
+T6 --> T7[Rotar derecha]
+T7 --> T8[Avanzar barra derecha]
+T8 --> T9[STOP]
+
+
 
 ```
 
