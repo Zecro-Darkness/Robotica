@@ -1,5 +1,8 @@
 # Laboratorio 04 – Control de Turtlesim con ROS2 Humble
-
+## Integrantes
+Juan Manuel Beltran Botello
+Alejandro Mendivelso Torres
+Oscar Jhondairo Siabato Leon
 ## Descripción breve / Objetivos
 
 Este proyecto consiste en controlar una tortuga dentro de ROS2 utilizando el teclado (sin hacer uso del paquete `turtle_teleop_key`). Además, se implementa la funcionalidad para dibujar las iniciales del nombre mediante teclas específicas. El objetivo principal es practicar el uso de ROS2, Linux y Python en el desarrollo de nodos, publishers y subscribers.
