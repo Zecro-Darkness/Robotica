@@ -67,6 +67,43 @@ flowchart TD
     W --> X[Fin]
 
 ```
-![Diagrama de flujo](Diagrama1)
 
 ### Codigo letras
+
+El codigo en mermaid es
+```mermaid
+flowchart TD
+
+    A[Inicio] --> B[main]
+    B --> C[Inicializar rclpy]
+    C --> D[Crear TurtleController]
+    D --> E[Suscribirse a pose de la tortuga]
+    E --> F[Configurar publicador a cmd_vel]
+    F --> G[Esperar comandos de letras]
+
+    G --> H{¿Letra T?}
+    H -->|Sí| T1[Verificar si tortuga está lista]
+    T1 --> T2[Calcular ángulos objetivo: arriba, izquierda, derecha]
+    T2 --> T3[Ejecutar rotaciones]
+    T3 --> T4[Ejecutar movimientos lineales]
+    T4 --> R[Publicar stop]
+    H -->|No| I1{¿Letra I?}
+
+    I1 -->|Sí| I2[Verificar pose]
+    I2 --> I3[Calcular trayecto recto]
+    I3 --> I4[Ejecutar movimiento vertical]
+    I4 --> R
+
+    I1 -->|No| L1{¿Letra L?}
+
+    L1 -->|Sí| L2[Verificar pose]
+    L2 --> L3[Bajar verticalmente]
+    L3 --> L4[Avanzar horizontalmente]
+    L4 --> R
+
+    L1 -->|No| G
+
+    R --> G
+
+```
+
