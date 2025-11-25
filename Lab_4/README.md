@@ -67,6 +67,6 @@ flowchart TD
     W --> X[Fin]
 
 ```
-![Diagrama de flujo](Diagrama1.png)
+![Diagrama de flujo](Diagrama1)
 
 ### Codigo letras
