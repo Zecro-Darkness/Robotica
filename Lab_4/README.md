@@ -44,7 +44,7 @@ El primer paso para la realización de este laboratorio fue instalar Linux. En n
    - Se optó por no usar el nodo `turtle_teleop_key` para garantizar que el control se hiciera de forma personalizada desde nuestro script.
 
 3. **Dibujo automático de letras**:
-   - Se creó un archivo `codigo_letras.prg` con las trayectorias específicas para cada letra (O, J, S, L, M, B, A, T).
+   - Se creó un archivo `codigo_letras.prg` (el cual fue el mismo move_turtle.py) con las trayectorias específicas para cada letra (O, J, S, L, M, B, A, T).
    - Cada letra fue convertida a código ROS2, implementando una función independiente para cada una de ellas que movía la tortuga a lo largo de las trayectorias definidas.
 
 4. **Integración y prueba de nodos**:
