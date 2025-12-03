@@ -106,5 +106,6 @@ sequenceDiagram
 ### Video del brazo
 ### Video interfaz de usuario
 
-## Gráfica digital de las poses comparádola con la fotografáa del brazo real en la misma configuración.
+## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
+
 
