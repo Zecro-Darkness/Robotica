@@ -48,7 +48,9 @@ La interfaz gráfica no es solo un panel de botones, sino una herramienta de ing
 - **Parada de Emergencia**: Interruptor de software prioritario bloquear el envío de torque a los motores (`Torque Enable = 0`), permitiendo detener el robot instantáneamente ante situaciones de riesgo.
 - **Validación de Entradas**: Todos los campos de texto y sliders poseen validación de rangos para evitar comandos fuera de los límites operativos del hardware.
 
-## Diagrama de flujo
+
+## Diagrama de flujo de las acciones del robot
+
 ``` mermaid
 graph TD
     A([Inicio]) --> B[Inicializar ROS 2]
@@ -89,9 +91,8 @@ graph TD
     E -.-> W
     I -.-> X
 ```
-### Diagrama de flujo detallado del codigo
 
-### Diagrama de flujo detallado del codigo
+## Diagrama de flujo detallado del codigo
 ``` mermaid
 flowchart TD
 
@@ -192,6 +193,7 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 ### Video interfaz de usuario
 
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
+
 
 
 
