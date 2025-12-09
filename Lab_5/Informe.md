@@ -48,8 +48,50 @@ La interfaz gráfica no es solo un panel de botones, sino una herramienta de ing
 - **Parada de Emergencia**: Interruptor de software prioritario bloquear el envío de torque a los motores (`Torque Enable = 0`), permitiendo detener el robot instantáneamente ante situaciones de riesgo.
 - **Validación de Entradas**: Todos los campos de texto y sliders poseen validación de rangos para evitar comandos fuera de los límites operativos del hardware.
 
-## Diagrama de flujo de acciones del robot utilizando la herramienta Mermaid.
+## Diagrama de flujo
+``` mermaid
+graph TD
+    A([Inicio]) --> B[Inicializar ROS 2]
+    B --> C[Crear Nodo PincherController]
+    C --> D{Conexión Hardware?}
+    D -- Sí --> E[Configurar Motores y Timers]
+    D -- No --> F[Modo Simulación]
+    E --> G[Iniciar Thread ROS Spin]
+    F --> G
+    G --> H[Inicializar PincherGUI]
+    H --> I[Configurar Ventana y Pestañas]
+    I --> J[GUI Main Loop]
+    
+    J --> K{Interacción Usuario}
+    
+    K -- Mover Slider Articular --> L[Calcular Valor Dynamixel]
+    L --> M[Enviar a Motor]
+    
+    K -- Mover Slider Cartesiano --> N[Cinemática Inversa]
+    N --> O{Converge?}
+    O -- Sí --> P[Mover Motores]
+    O -- No --> Q[Mostrar Error IK]
+    
+    K -- Botón Home --> R[Mover a Posición 0]
+    
+    K -- Lanzar RViz --> S[Subproceso Launch RViz]
+    
+    K -- Cerrar Ventana --> T[Shutdown ROS]
+    T --> U([Fin])
+    
+    subgraph Segundo Plano
+        V[Timer: Leer Motores]
+        W[Timer: Publicar JointStates]
+        X[Timer: Actualizar Gráficas]
+    end
+    
+    E -.-> V
+    E -.-> W
+    I -.-> X
+```
+### Diagrama de flujo detallado del codigo
 
+### Diagrama de flujo detallado del codigo
 ``` mermaid
 flowchart TD
 
@@ -150,6 +192,7 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 ### Video interfaz de usuario
 
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
+
 
 
 
