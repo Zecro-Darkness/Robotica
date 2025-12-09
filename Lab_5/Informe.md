@@ -53,90 +53,69 @@ La interfaz gráfica no es solo un panel de botones, sino una herramienta de ing
 ### Diagrama 1
 ``` mermaid
 flowchart TD
-    A[Inicio del programa] --> B[Inicializar rclpy]
-    B --> C[Crear nodo PincherController]
-    C --> D{Hardware conectado?}
 
-    D -- Si --> E[Inicializar motores]
-    D -- No --> F[Modo simulacion]
+A[Start program] --> B[main and rclpy.init]
+B --> C[Create PincherController]
 
-    C --> G[Crear GUI PincherGUI]
-    G --> H[Configurar pestañas y sliders]
+C --> D{Port and baudrate OK}
+D -->|Yes| E[Hardware connected]
+D -->|No| G[Simulation mode]
 
-    H --> I[Timers ROS2]
-    I --> J[Publicar joint_states 10Hz]
-    I --> K[Leer motores 20Hz]
+E --> F[Initialize motors read positions]
+G --> H[Skip hardware init]
 
-    G --> L[Eventos GUI]
-    L --> M[Usuario mueve sliders]
-    M --> N[Ejecutar move_motor]
+E --> I[Create publisher and timers]
+G --> I
 
-    G --> O[Control cartesiano]
-    O --> P[Cinematica inversa -> nuevas q]
+I --> J[Create ROS spin thread]
+J --> K[Create GUI and start mainloop]
 
-    C --> Q{Parada de emergencia?}
-    Q -- Si --> R[Deshabilitar torque]
+L1[Timer read_joint_positions] --> L2{Hardware and no emergency}
+L2 -->|Yes| L3[Read motor positions]
+L3 --> L4[Convert to radians and apply sign]
+L4 --> L5[Update current_joint_positions]
+L2 -->|No| L6[Do not read hardware]
 
-```
-### Diagrama 2
-``` mermaid
-flowchart TD
+M1[Timer publish_joint_states] --> M2[Build JointState message]
+M2 --> M3[Publish on joint_states]
 
-    A[Inicio] --> B[Inicializar rclpy]
-    B --> C[Crear PincherController]
-    C --> D[Verificar conexión con motores]
+U1[User moves joint slider] --> S1[on_slider_change deg to rad to ticks]
+S1 --> CALL_MOVE
 
-    D -->|Conectado| E[Inicializar motores]
-    D -->|Sin hardware| F[Modo simulación]
+U2[User enters joint angles] --> S2[move_from_entry or move_to_joint_angles]
+S2 --> CALL_MOVE
 
-    A --> G[Crear GUI PincherGUI]
-    G --> H[Cargar pestañas, sliders y controles]
+U3[User changes Cartesian sliders] --> C1[on_cartesian_change read XYZ]
+C1 --> C2[Get current q]
+C2 --> C3[Inverse kinematics]
+C3 --> C4{IK converged and limits OK}
+C4 -->|Yes| C5[Convert q solution to ticks]
+C5 --> CALL_MOVE
+C4 -->|No| C6[Update IK status only]
 
-    subgraph ROS2
-        I[Timer 1: publicar joint_states]
-        J[Timer 2: leer posiciones de motores]
-    end
+U4[User presses HOME] --> H1[home_all_motors default goal]
+H1 --> CALL_MOVE
 
-    subgraph GUI
-        K[Eventos de teclado y sliders]
-        L[Control cartesiano]
-    end
+U5[User presses EMERGENCY STOP] --> E1[Set emergency flag true]
+E1 --> E2[Disable motor torque]
 
-    K --> M[Enviar comando al controlador]
-    L --> M
+CALL_MOVE[move_motor] --> N1{Emergency active}
+N1 -->|Yes| N2[Ignore command]
+N1 -->|No| N3[Compute target angle from ticks]
 
-    M --> N[Controlador recibe comandos]
+N3 --> N4{Change > threshold}
+N4 -->|Yes| N5[Update previous_joint_positions]
+N4 -->|No| N6[Keep previous]
 
-    N --> O[Controlador calcula velocidades y posiciones]
-    O --> P[Mover motores]
-    P --> J
+N5 --> N7[Update target_joint_positions]
+N6 --> N7
 
-    J --> I
-    I --> G
+N7 --> N8{Hardware connected}
+N8 -->|Yes| N9[Write GOAL_POSITION to motor]
+N8 -->|No| N10[Update current_joint_positions in simulation]
 
-    N --> Q{Parada de emergencia?}
-    Q -->|Si| R[Deshabilitar torque]
-
-```
-### Diagrama 3
-``` mermaid
-sequenceDiagram
-    participant U as Usuario
-    participant GUI as PincherGUI (Tkinter)
-    participant C as PincherController (ROS2)
-    participant DXL as Motores Dynamixel
-    participant ROS as Publicación JointState
-
-    U ->> GUI: Mover slider / Teclas
-    GUI ->> C: Enviar comando de movimiento
-    C ->> C: Calcular nueva posición objetivo
-    C ->> DXL: Enviar posición / velocidad
-
-    Note over DXL: Motor se mueve físicamente
-    DXL -->> C: Reporte de posición actual
-
-    C ->> ROS: Publicar joint_states
-    ROS -->> GUI: Actualizar visualización
+K --> Z[User closes window]
+Z --> Z1[on_close destroy GUI and shutdown rclpy]
 
 ```
 ## Plano de planta de la ubicación de cada uno de los elementos.
@@ -172,6 +151,7 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 ### Video interfaz de usuario
 
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
+
 
 
 
