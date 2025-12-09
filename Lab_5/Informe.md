@@ -50,7 +50,6 @@ La interfaz gráfica no es solo un panel de botones, sino una herramienta de ing
 
 ## Diagrama de flujo de acciones del robot utilizando la herramienta Mermaid.
 
-### Diagrama 1
 ``` mermaid
 flowchart TD
 
@@ -151,6 +150,7 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 ### Video interfaz de usuario
 
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
+
 
 
 
