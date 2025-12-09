@@ -111,29 +111,29 @@ sequenceDiagram
 ```
 ## Plano de planta de la ubicación de cada uno de los elementos.
 ## Descripción de las funciones utilizadas.
-A continuación se describen las funciones y métodos más relevantes del sistema de control para el robot PhantomX Pincher, implementado en el script `control_servo.py`.
+A continuación se describen las funciones y métodos más relevantes del sistema de control para el robot PhantomX Pincher, implementado en el script control_servo.py.
 
-## 1. Controlador del Robot (`PincherController`)
+## 1. Controlador del Robot (PincherController)
 
 Este componente gestiona la lógica de bajo nivel, la comunicación con los motores y la seguridad.
 
 | Función | Descripción |
 | :--- | :--- |
-| **`move_motor(motor_id, position)`** | **Actuación**. Envía el comando de posición a una articulación específica. Es la función base para cualquier movimiento del robot. |
-| **`read_joint_positions()`** | **Retroalimentación**. Lee la posición real de los motores desde el hardware (Dynamixel) para mantener el estado del sistema sincronizado. |
-| **`initialize_motors()`** | **Configuración**. Establece los parámetros iniciales de torque y velocidad, y sincroniza la posición lógica con la física al arrancar. |
-| **`emergency_stop()`** | **Seguridad**. Deshabilita inmediatamente el torque de todos los motores para detener el robot ante cualquier contingencia. |
+| **move_motor(motor_id, position)** | **Actuación**. Envía el comando de posición a una articulación específica. Es la función base para cualquier movimiento del robot. |
+| **read_joint_positions()** | **Retroalimentación**. Lee la posición real de los motores desde el hardware (Dynamixel) para mantener el estado del sistema sincronizado. |
+| **initialize_motors()** | **Configuración**. Establece los parámetros iniciales de torque y velocidad, y sincroniza la posición lógica con la física al arrancar. |
+| **emergency_stop()** | **Seguridad**. Deshabilita inmediatamente el torque de todos los motores para detener el robot ante cualquier contingencia. |
 
-## 2. Interfaz y Matemáticas (`PincherGUI`)
+## 2. Interfaz y Matemáticas (PincherGUI)
 
 Este componente maneja la interacción con el usuario y los cálculos cinemáticos.
 
 | Función | Descripción |
 | :--- | :--- |
-| **`on_cartesian_change()`** | **Control TCP**. Se ejecuta al modificar los valores X, Y, Z. Orquestra el cálculo de la cinemática inversa para mover el robot a la coordenada deseada. |
-| **`inverse_kinematics(target, current)`** | **Cálculo Matemático**. Algoritmo iterativo (Jacobiano) que determina qué ángulos articulares son necesarios para alcanzar una posición cartesiana específica. |
-| **`on_slider_change(motor_id)`** | **Control Manual**. Callback para el movimiento individual de cada articulación mediante sliders, permitiendo un ajuste fino pose a pose. |
-| **`update_visualization()`** | **Feedback Visual**. Renderiza en tiempo real las vistas Superior, Lateral y Frontal del robot, basándose en el modelo cinemático directo. |
+| **on_cartesian_change()** | **Control TCP**. Se ejecuta al modificar los valores X, Y, Z. Orquestra el cálculo de la cinemática inversa para mover el robot a la coordenada deseada. |
+| **inverse_kinematics(target, current)** | **Cálculo Matemático**. Algoritmo iterativo (Jacobiano) que determina qué ángulos articulares son necesarios para alcanzar una posición cartesiana específica. |
+| **on_slider_change(motor_id)** | **Control Manual**. Callback para el movimiento individual de cada articulación mediante sliders, permitiendo un ajuste fino pose a pose. |
+| **update_visualization()** | **Feedback Visual**. Renderiza en tiempo real las vistas Superior, Lateral y Frontal del robot, basándose en el modelo cinemático directo. |
 
 ## Código del script utilizado para el desarrollo de la práctica.
 ## Videos
@@ -142,6 +142,7 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 ### Video interfaz de usuario
 
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
+
 
 
 
