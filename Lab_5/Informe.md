@@ -191,7 +191,10 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 ## Videos
 
 ### Video del brazo
+(https://youtu.be/XkJ0XeOxPtw)
 ### Video interfaz de usuario
+(https://youtu.be/Xd_dXfkQBT8)
+
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
 ### Pose 1.[ 0, 0, 0, 0, 0 ]
 ![Imagen de WhatsApp 2025-12-03 a las 10 34 54_23a0c66b](https://github.com/user-attachments/assets/2b807bbb-9992-4ba2-ab0c-5acffe2a9e87)
@@ -231,6 +234,7 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 ![Imagen de WhatsApp 2025-12-03 a las 10 40 08_cc005801](https://github.com/user-attachments/assets/14a8b288-e1f1-4321-90f6-52d0913525f7)
 
 ![Imagen de WhatsApp 2025-12-03 a las 10 40 14_aeffd6fe](https://github.com/user-attachments/assets/d6e7fc5d-82d9-43a4-b416-3e0a31945cac)
+
 
 
 
