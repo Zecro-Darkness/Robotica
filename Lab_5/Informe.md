@@ -188,15 +188,15 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 | **on_slider_change(motor_id)** | **Control Manual**. Callback para el movimiento individual de cada articulación mediante sliders, permitiendo un ajuste fino pose a pose. |
 | **update_visualization()** | **Feedback Visual**. Renderiza en tiempo real las vistas Superior, Lateral y Frontal del robot, basándose en el modelo cinemático directo. |
 
-## Código del script utilizado para el desarrollo de la práctica.
 ## Videos
 
 ### Video del brazo
 ### Video interfaz de usuario
-
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
+### Pose 1.[ 0, 0, 0, 0, 0]
+![Imagen de WhatsApp 2025-12-03 a las 10 34 54_23a0c66b](https://github.com/user-attachments/assets/2b807bbb-9992-4ba2-ab0c-5acffe2a9e87)
 
-
+![Imagen de WhatsApp 2025-12-03 a las 10 35 59_c82b1f53](https://github.com/user-attachments/assets/dac14d65-a7aa-49c6-a889-516924ba32c7)
 
 
 
