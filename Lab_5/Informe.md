@@ -6,7 +6,18 @@
 - Alejandro Mendivelso Torres
 - Oscar Jhondairo Siabato Leon
 
-## Descripción detallada de la solución planteada.
+Este repositorio contiene los entregables para la práctica de laboratorio con el robot PhantomX Pincher.
+
+## 1. Descripción de la Solución
+La solución implementada consiste en un script de Python que integra ROS 2 (Humble) con una interfaz gráfica desarrollada en `tkinter`. El sistema permite el control del brazo robótico PhantomX Pincher tanto en el espacio articular (moviendo cada motor individualmente) como en el espacio cartesiano (controlando la posición y orientación del efector final).
+
+### Características Principales:
+- **Control Articular**: Sliders y campos de entrada para controlar los 5 servomotores Dynamixel.
+- **Control Cartesiano**: Cinematica inversa numérica para mover el efector final a coordenadas (X, Y, Z) y orientación (Roll, Pitch, Yaw).
+- **Visualización en Tiempo Real**: Gráficos con `matplotlib` mostrando la configuración del robot en 3 vistas (Superior, Lateral, Frontal) y visualización numérica de la pose.
+- **Integración con RViz**: Botón para lanzar la visualización del modelo URDF en RViz sincronizado con el robot real.
+- **Seguridad**: Botón de Parada de Emergencia que deshabilita el torque de los motores.
+
 ## Diagrama de flujo de acciones del robot utilizando la herramienta Mermaid.
 
 ### Diagrama 1
@@ -107,5 +118,6 @@ sequenceDiagram
 ### Video interfaz de usuario
 
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
+
 
 
