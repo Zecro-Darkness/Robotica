@@ -193,13 +193,44 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 ### Video del brazo
 ### Video interfaz de usuario
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
-### Pose 1.[ 0, 0, 0, 0, 0]
+### Pose 1.[ 0, 0, 0, 0, 0 ]
 ![Imagen de WhatsApp 2025-12-03 a las 10 34 54_23a0c66b](https://github.com/user-attachments/assets/2b807bbb-9992-4ba2-ab0c-5acffe2a9e87)
 
 ![Imagen de WhatsApp 2025-12-03 a las 10 35 59_c82b1f53](https://github.com/user-attachments/assets/dac14d65-a7aa-49c6-a889-516924ba32c7)
 
+![Imagen de WhatsApp 2025-12-03 a las 10 36 12_5e01baf2](https://github.com/user-attachments/assets/27146ee2-a605-4c49-92ed-bf2773337916)
 
+### Pose 2.[ 25, 25, 20, -20, 0 ]
 
+![Imagen de WhatsApp 2025-12-03 a las 10 36 46_6e4763be](https://github.com/user-attachments/assets/ff1fd845-390c-4932-bd67-9652c8d1d611)
+
+![Imagen de WhatsApp 2025-12-03 a las 10 37 15_23891b1a](https://github.com/user-attachments/assets/67f09495-8040-4b44-886d-8e53930721a8)
+
+![Imagen de WhatsApp 2025-12-03 a las 10 37 24_e1811510](https://github.com/user-attachments/assets/d899d528-6f93-4ef0-ae2f-2822de2b0e9b)
+
+### Pose 3.[ -35, 35, -30, 30, 0 ]
+
+![Imagen de WhatsApp 2025-12-03 a las 10 37 54_2427ea4d](https://github.com/user-attachments/assets/3c1aa17d-f6aa-4f39-ab05-746f2def6603)
+
+![Imagen de WhatsApp 2025-12-03 a las 10 38 08_05d16c23](https://github.com/user-attachments/assets/61a9f097-550c-4ffb-8d0d-4283a28352c7)
+
+![Imagen de WhatsApp 2025-12-03 a las 10 38 19_8ee1d14a](https://github.com/user-attachments/assets/cd8f2d94-929a-4f7b-b3a6-2461e0cbf9ff)
+
+### Pose 4.[ 85, -20, 55, 25, 0 ]
+
+![Imagen de WhatsApp 2025-12-03 a las 10 39 00_0fcc9cfb](https://github.com/user-attachments/assets/c2654add-5619-4201-9054-566fbecf6edb)
+
+![Imagen de WhatsApp 2025-12-03 a las 10 39 15_63a0f642](https://github.com/user-attachments/assets/f8a326d1-1f97-4372-b21c-6070fe7e96cd)
+
+![Imagen de WhatsApp 2025-12-03 a las 10 39 23_afd7f274](https://github.com/user-attachments/assets/f025985e-8635-4f9d-93f4-5c2c804d878e)
+
+### Pose 5.[ 80, -35, 55, -45, 0 ]
+
+![Imagen de WhatsApp 2025-12-03 a las 10 39 55_67a74ccf](https://github.com/user-attachments/assets/71ebe5cc-e053-4858-ad3a-fe1713974e0c)
+
+![Imagen de WhatsApp 2025-12-03 a las 10 40 08_cc005801](https://github.com/user-attachments/assets/14a8b288-e1f1-4321-90f6-52d0913525f7)
+
+![Imagen de WhatsApp 2025-12-03 a las 10 40 14_aeffd6fe](https://github.com/user-attachments/assets/d6e7fc5d-82d9-43a4-b416-3e0a31945cac)
 
 
 
