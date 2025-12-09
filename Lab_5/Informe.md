@@ -161,6 +161,8 @@ Z --> Z1[on_close destroy GUI and shutdown rclpy]
 
 ```
 ## Plano de planta de la ubicación de cada uno de los elementos.
+![sss (1)](https://github.com/user-attachments/assets/2bbcac79-3055-416d-9833-845238d7015f)
+
 ## Descripción de las funciones utilizadas.
 A continuación se describen las funciones y métodos más relevantes del sistema de control para el robot PhantomX Pincher, implementado en el script control_servo.py.
 
@@ -193,6 +195,7 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 ### Video interfaz de usuario
 
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
+
 
 
 
