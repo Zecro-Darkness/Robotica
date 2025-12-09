@@ -286,23 +286,45 @@ class PincherGUI:
     
     def setup_header(self):
         """Header con información del grupo"""
-        header_frame = tk.Frame(self.window, bg="#2196F3", height=70)
+        header_frame = tk.Frame(self.window, bg="#2196F3", height=90)
         header_frame.pack(fill='x', side='top')
         header_frame.pack_propagate(False)
         
+        # Frame izquierdo para logo
+        left_frame = tk.Frame(header_frame, bg="#2196F3")
+        left_frame.pack(side='left', padx=10)
+        
+        # Intentar cargar logo
+        try:
+            import os
+            logo_path = os.path.join(os.path.dirname(__file__), 'escudo_unal.png')
+            if os.path.exists(logo_path):
+                from PIL import Image, ImageTk
+                logo_img = Image.open(logo_path)
+                logo_img = logo_img.resize((70, 70), Image.Resampling.LANCZOS)
+                logo_photo = ImageTk.PhotoImage(logo_img)
+                logo_label = tk.Label(left_frame, image=logo_photo, bg="#2196F3")
+                logo_label.image = logo_photo  # Keep reference
+                logo_label.pack()
+        except:
+            pass
+        
+        # Frame central para texto
+        center_frame = tk.Frame(header_frame, bg="#2196F3")
+        center_frame.pack(side='left', expand=True, fill='both')
+        
         # Título
-        tk.Label(header_frame, text="PhantomX Pincher - Control HMI",
-                font=("Arial", 18, "bold"), bg="#2196F3", fg="white").pack(pady=5)
+        tk.Label(center_frame, text="PhantomX Pincher - Control HMI",
+                font=("Arial", 18, "bold"), bg="#2196F3", fg="white").pack(pady=(5,2))
         
-        # Información del grupo
-        info_frame = tk.Frame(header_frame, bg="#2196F3")
-        info_frame.pack()
+        # Universidad
+        tk.Label(center_frame, text="Universidad Nacional de Colombia",
+                font=("Arial", 11, "bold"), bg="#2196F3", fg="white").pack()
         
-        tk.Label(info_frame, text="Universidad Nacional de Colombia | Robótica",
-                font=("Arial", 10), bg="#2196F3", fg="white").pack(side='left', padx=20)
-        
-        tk.Label(info_frame, text="Grupo: [Ingrese nombres aquí]",
-                font=("Arial", 10), bg="#2196F3", fg="white").pack(side='left', padx=20)
+        # Integrantes
+        team_text = "Juan Manuel Beltrán Botello • Óscar Jhodairo Siabato León • Alejandro Mendivelso Torres"
+        tk.Label(center_frame, text=team_text,
+                font=("Arial", 9), bg="#2196F3", fg="white").pack(pady=(2,5))
     
     def setup_tab1(self):
         """Pestaña 1: Control por Sliders (mejorada)"""
@@ -315,6 +337,7 @@ class PincherGUI:
         
         self.sliders = {}
         self.slider_value_labels = {}
+        self.entries = {}  # Inicializar entries aquí para evitar errores
         
         for i, motor_id in enumerate(self.controller.dxl_ids):
             frame = tk.Frame(motors_frame)
@@ -687,15 +710,11 @@ Características:
             y = self.cart_sliders['Y'].get()
             z = self.cart_sliders['Z'].get()
             
-            # Obtener Pitch deseado (convertir a radianes)
-            pitch_deg = self.cart_sliders['Pitch'].get()
-            pitch_rad = np.deg2rad(pitch_deg)
-            
             target_pos = np.array([x, y, z])
             
-            # Cinemática inversa Geométrica
-            # Pasamos el pitch deseado
-            solution_q, success = self.inverse_kinematics(target_pos, target_pitch=pitch_rad)
+            # Cinemática inversa numérica
+            current_q = np.array([self.controller.current_joint_positions[i] for i in range(4)])
+            solution_q, success = self.inverse_kinematics(target_pos, current_q)
             
             if success:
                 # Mover a la solución
@@ -721,7 +740,7 @@ Características:
             
                 self.ik_status_label.config(text="Estado: IK convergió ✓", fg="green")
             else:
-                self.ik_status_label.config(text="Estado: Fuera de espacio de trabajo ✗", fg="red")
+                self.ik_status_label.config(text="Estado: IK no convergió ✗", fg="red")
         
         except Exception as e:
             self.ik_status_label.config(text=f"Error: {str(e)}", fg="red")
@@ -861,88 +880,49 @@ Características:
         
         return J
     
-    def inverse_kinematics(self, target_pos, target_pitch=0.0):
-        """Cinemática Inversa Geométrica para PhantomX Pincher (4DOF)"""
-        x, y, z = target_pos
+    def inverse_kinematics(self, target_pos, current_q, max_iter=100, tol=0.005):
+        """Cinemática inversa usando Jacobiano con límites articulares"""
+        q = current_q.copy()
         
-        # 1. Base (q1)
-        q1 = np.arctan2(y, x)
+        print(f"[IK] Target: {target_pos}, Current Q: {np.degrees(current_q)}")
         
-        # 2. Proyección Planar
-        # Distancia radial al objetivo
-        r = np.sqrt(x**2 + y**2)
-        # Altura relativa al hombro (L1 offset)
-        z_eff = z - self.L1
-        
-        # 3. Posición de la Muñeca (Wrist Center)
-        # Retrocedemos desde el efector final usando L4 y el Pitch deseado
-        # Pitch es la suma de q2 + q3 + q4 (en el plano)
-        # Nota: Ajustar según la definición de 0 grados del robot
-        
-        rw = r - self.L4 * np.cos(target_pitch)
-        zw = z_eff - self.L4 * np.sin(target_pitch)
-        
-        # 4. Resolución 2-Link (L2, L3) para llegar a (rw, zw)
-        # Ley de Cosenos
-        D = (rw**2 + zw**2 - self.L2**2 - self.L3**2) / (2 * self.L2 * self.L3)
-        
-        # Verificar alcanzabilidad
-        if abs(D) > 1.0:
-            return None, False # Fuera del espacio de trabajo
+        # Obtener límites en radianes
+        limits = []
+        for i in range(1, 5):
+            min_deg, max_deg = self.controller.joint_limits.get(i, (-150, 150))
+            limits.append((np.deg2rad(min_deg), np.deg2rad(max_deg)))
             
-        # Codo abajo (Elbow Down) es la configuración típica
-        q3 = np.arccos(D) 
-        # Para codo arriba sería -arccos(D)
+        for iteration in range(max_iter):
+            T = self.forward_kinematics(q)
+            current_pos = T[:3, 3]
+            
+            error = target_pos - current_pos
+            error_norm = np.linalg.norm(error)
+            
+            if iteration % 20 == 0:
+                print(f"[IK] Iter {iteration}: Error = {error_norm:.6f}, Q = {np.degrees(q)}")
+            
+            if error_norm < tol:
+                print(f"[IK] ✓ Converged in {iteration} iterations")
+                return q, True
+            
+            J = self.compute_jacobian(q)
+            
+            try:
+                # Método simple con pseudo-inversa
+                delta_q = np.linalg.pinv(J) @ error
+                q += delta_q * 0.5  # Ganancia
+                
+                # Aplicar límites articulares
+                for i in range(4):
+                    q[i] = max(limits[i][0], min(limits[i][1], q[i]))
+                    
+            except Exception as e:
+                print(f"[IK] ✗ Exception: {e}")
+                return q, False
         
-        # Calcular q2
-        # alpha = atan2(zw, rw)
-        # beta = atan2(L3*sin(q3), L2 + L3*cos(q3))
-        # q2 = alpha - beta
-        alpha = np.arctan2(zw, rw)
-        beta = np.arctan2(self.L3 * np.sin(q3), self.L2 + self.L3 * np.cos(q3))
-        q2 = alpha - beta
-        
-        # 5. Calcular q4
-        # q2 + q3 + q4 = pitch
-        # Pero ojo con los offsets de DH.
-        # En FK: T2 tiene q2 - pi/2. 
-        # Significa que el q2 geométrico (0 horizontal) corresponde a q2_dh = q2_geom + pi/2
-        # Vamos a calcular los ángulos geométricos puros y luego ajustar a DH/Motores
-        
-        # Ajuste de q2 para coincidir con DH (donde -90 es vertical arriba)
-        # Si q2_geom=0 es horizontal, y q2_dh=0 es vertical...
-        # Espera, revisemos forward_kinematics:
-        # T2 = dh(q[1] - pi/2, ...)
-        # Si q[1]=0 (Home), T2 rota -90. El brazo apunta arriba.
-        # Si q[1]=90, T2 rota 0. El brazo apunta horizontal.
-        # Mi q2 geométrico (alpha-beta) es 0 cuando apunta al horizonte?
-        # alpha = atan2(zw, rw). Si zw=0, rw>0 -> alpha=0.
-        # beta ~ 0. q2 ~ 0.
-        # Entonces q2_geom 0 es horizontal.
-        # Para que el robot esté horizontal, q[1] debe ser 0 (según Home) o 90?
-        # En el robot real, Home (0,0,0,0) es forma de L (Arriba, Arriba, Arriba).
-        # Entonces q2_geom=0 (horizontal) corresponde a q[1] = 0? No.
-        # Si q[1]=0, el brazo está vertical (L).
-        # Si q[1]=pi/2, el brazo está horizontal?
-        # T2(q-pi/2). Si q=0 -> rot(-90). Vertical. Correcto.
-        # Si q=pi/2 -> rot(0). Horizontal. Correcto.
-        # Entonces q[1] (motor) = q2_geom + pi/2.
-        
-        q2_motor = q2 + np.pi/2
-        
-        # q3: En DH es directo. Si q3=0, L3 sigue a L2.
-        # En geométrico, q3 es ángulo entre L2 y L3.
-        # Si están alineados, q3=0.
-        # Entonces q3_motor = q3.
-        q3_motor = q3
-        
-        # q4: q2_geom + q3 + q4_geom = pitch
-        # q4_geom = pitch - q2_geom - q3
-        # En DH, T4 es directo.
-        # q4_motor = q4_geom.
-        q4_motor = target_pitch - q2 - q3
-        
-        return np.array([q1, q2_motor, q3_motor, q4_motor, 0.0]), True
+        print(f"[IK] ✗ No convergió después de {max_iter} iteraciones. Error final: {error_norm:.6f}")
+        return q, False
     
     def rotation_matrix_to_euler(self, R):
         """Convierte matriz de rotación a ángulos de Euler (Roll-Pitch-Yaw)"""
