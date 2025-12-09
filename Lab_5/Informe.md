@@ -9,14 +9,44 @@
 Este repositorio contiene los entregables para la práctica de laboratorio con el robot PhantomX Pincher.
 
 ## 1. Descripción de la Solución
-La solución implementada consiste en un script de Python que integra ROS 2 (Humble) con una interfaz gráfica desarrollada en `tkinter`. El sistema permite el control del brazo robótico PhantomX Pincher tanto en el espacio articular (moviendo cada motor individualmente) como en el espacio cartesiano (controlando la posición y orientación del efector final).
+La solución desarrollada propone un sistema de control robusto y modular para el brazo robótico **PhantomX Pincher**, integrando tecnologías de robótica moderna sobre el middleware **ROS 2 (Robot Operating System, distribución Humble)**. El proyecto se centra en la implementación de un nodo controlador inteligente capaz de gestionar la cinemática del manipulador y ofrecer una experiencia de usuario fluida a través de una Interfaz Gráfica (GUI) avanzada.
 
-### Características Principales:
-- **Control Articular**: Sliders y campos de entrada para controlar los 5 servomotores Dynamixel.
-- **Control Cartesiano**: Cinematica inversa numérica para mover el efector final a coordenadas (X, Y, Z) y orientación (Roll, Pitch, Yaw).
-- **Visualización en Tiempo Real**: Gráficos con `matplotlib` mostrando la configuración del robot en 3 vistas (Superior, Lateral, Frontal) y visualización numérica de la pose.
-- **Integración con RViz**: Botón para lanzar la visualización del modelo URDF en RViz sincronizado con el robot real.
-- **Seguridad**: Botón de Parada de Emergencia que deshabilita el torque de los motores.
+### 1.1 Arquitectura de Software y Hardware
+El sistema opera bajo una arquitectura de **Nodos Concurrentes**, donde el script principal `control_servo.py` instancia una clase heredada de `rclpy.node.Node`.
+
+- **Capa de Abstracción de Hardware (HAL)**:
+  - Se utiliza la librería `dynamixel_sdk` para la comunicación serial directa con los servos Dynamixel (Protocolos 1.0/2.0 según el modelo).
+  - El sistema implementa **lectura asíncrona** de la posición de los motores mediante un `timer` dedicado a 20Hz, garantizando que el estado del software siempre refleje la realidad física del robot.
+  - Se gestiona la conversión de unidades entre *raw values* (0-1023/4095) y *radianes* del sistema internacional.
+
+- **Integración con Ecosistema ROS 2**:
+  - El nodo publica constantemente en el tópico `/joint_states` (mensaje `sensor_msgs/JointState`). Esto permite la total interoperabilidad con herramientas estándar de ROS como **RViz** (visualización 3D), **Robot State Publisher** (transformaciones TF) y paquetes de planificación como **MoveIt 2**.
+  - La arquitectura *multithreading* permite que el bucle de eventos de ROS (`rclpy.spin`) y el bucle principal de la interfaz gráfica (`tkinter.mainloop`) se ejecuten en paralelo sin bloquearse mutuamente.
+
+### 1.2 Modelo Cinemático y Matemático
+El control del robot se fundamenta en un modelo matemático riguroso:
+
+- **Cinemática Directa (FK)**:
+  - Implementación manual de matrices de transformación homogénea basada en los parámetros **Denavit-Hartenberg (DH)** del PhantomX Pincher.
+  - Permite calcular la posición `(x, y, z)` y orientación `(roll, pitch, yaw)` del Efector Final (TCP) en tiempo real para propósitos de visualización y odometría.
+
+- **Cinemática Inversa Numérica (IK)**:
+  - Se desarrolló un **solver iterativo basado en el Jacobiano**. A diferencia de las soluciones analíticas cerradas, este método numérico es más flexible y permite incorporar restricciones.
+  - **Algoritmo**: Utiliza el método de Newton-Raphson con la pseudo-inversa del Jacobiano (`J^+`) para calcular las velocidades articulares necesarias que minimicen el error cartesiano `e = x_deseado - x_actual`.
+  - **Manejo de Límites**: El algoritmo integra una verificación activa de los límites articulares ("Joint Limits") en cada iteración, asegurando que las soluciones generadas sean físicamente alcanzables y seguras para el robot.
+
+### 1.3 Interfaz Hombre-Máquina (HMI) Avanzada
+La interfaz gráfica no es solo un panel de botones, sino una herramienta de ingeniería completa:
+
+- **Visualización Geométrica 3D**: Utilizando `matplotlib` integrado en `tkinter`, se generan tres proyecciones ortogonales (Planta, Perfil, Alzado) que se actualizan dinámicamente. Esto permite al operador verificar la pose del robot y prevenir colisiones antes de ejecutar movimientos.
+- **Odometría Visual**: Muestra numéricamente la pose Cartesiana del TCP y los valores articulares con alta precisión decimal.
+- **Control Híbrido**:
+    - **Modo Articular**: Control directo de cada grado de libertad (DoF) mediante sliders de precisión.
+    - **Modo Cartesiano**: Control intuitivo en el espacio de tarea. El usuario define *dónde* quiere el robot, y el algoritmo IK resuelve *cómo* llegar ahí.
+
+### 1.4 Protocolos de Seguridad
+- **Parada de Emergencia**: Interruptor de software prioritario bloquear el envío de torque a los motores (`Torque Enable = 0`), permitiendo detener el robot instantáneamente ante situaciones de riesgo.
+- **Validación de Entradas**: Todos los campos de texto y sliders poseen validación de rangos para evitar comandos fuera de los límites operativos del hardware.
 
 ## Diagrama de flujo de acciones del robot utilizando la herramienta Mermaid.
 
@@ -142,6 +172,7 @@ Este componente maneja la interacción con el usuario y los cálculos cinemátic
 ### Video interfaz de usuario
 
 ## Gráfica digital de las poses comparádola con la fotografía del brazo real en la misma configuración.
+
 
 
 
