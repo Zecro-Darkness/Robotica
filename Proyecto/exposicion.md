@@ -1,91 +1,124 @@
-# Exposición del Proyecto: Ejecución y Desarrollo (PhantomX Pincher)
+# Exposición Técnica Detallada: Ejecución y Arquitectura del Proyecto PhantomX Pincher
 
-Este documento detalla el desarrollo y ejecución de las dos partes principales del proyecto: Control Automático (Clasificación de Figuras) y Control por Teclado (Teleoperación Articular con Gripper Neumático).
-
----
-
-## Parte 1: Control Automático (Clasificación)
-
-Esta etapa implementa una solución autónoma donde el robot recibe un tipo de figura, planifica una trayectoria para recogerla de una zona de recolección y la deposita en la caneca correspondiente según su color/forma.
-
-### 1. Ejecución del Desarrollo
-La lógica se basa en una **Máquina de Estados Finitos (FSM)** robusta implementada en Python.
-- **Inicio**: El sistema espera en reposo (`IDLE`) hasta recibir un mensaje en el tópico `/figure_type`.
-- **Proceso**: Al detectar una figura (e.g., "cubo"), el nodo busca la caneca destino asociada (e.g., "caneca_roja") y desencadena una secuencia de pasos predefinidos.
-- **Secuencia**:
-  1.  **Home**: Movimiento a posición inicial segura.
-  2.  **Pick**: Aproximación a la zona de recolección (`recoleccion`).
-  3.  **Grasp**: Activación del gripper (cierre).
-  4.  **Lift & Transport**: Elevación y movimiento a través de puntos de paso seguros (`safe_carry_1` a `safe_carry_4`) para evitar colisiones.
-  5.  **Place**: Llegada a la coordenada de la caneca destino y apertura del gripper.
-  6.  **Return**: Retorno inverso por los puntos seguros hasta Home.
-
-La ejecución utiliza **trayectorias no bloqueantes** con timers para permitir un monitoreo constante y evitar congelar el nodo durante movimientos largos.
-
-### 2. Archivos Usados
-*   **`clasificador_node.py`**: Nodo principal. Contiene la lógica de la máquina de estados, el mapeo de `figura -> caneca` y la gestión de tiempos.
-*   **`poses.yaml`**: "Base de datos" de coordenadas. Almacena posiciones cartesianas precisas (x, y, z, roll, pitch, yaw) para Home, Recolección y cada una de las Canecas.
-*   **`phantomx_pincher.launch.py`**: Orquestador. Levanta el `clasificador_node`, pero fundamentalmente inicia el nodo `commander` (C++) y **MoveIt**, habilitando la planificación de trayectorias.
-*   **`phantomx_pincher_arm.xacro`**: Define la geometría del robot necesaria para calcular colisiones y cinemática.
-
-### 3. Conceptos de ROS 2 Usados
-*   **Nodos**: `clasificador_node` (Python) actúa como el cerebro de alto nivel.
-*   **Topics**:
-    *   `/figure_type` (Suscripción): Entrada del sistema (String).
-    *   `/pose_command` (Publicación): Mensaje personalizado `PoseCommand` que envía la pose deseada al nodo de control de bajo nivel.
-*   **Actions**: `gripper_trajectory_controller/follow_joint_trajectory`. Se usa un **Action Client** para controlar el gripper, permitiendo confirmar cuándo el gripper ha terminado de abrirse o cerrarse completamente antes de mover el brazo.
-*   **Parameters**: Uso de parámetros para cargar configuraciones o definir tiempos de espera (`TIME_MOVEMENT`, `TIME_GRIPPER`).
-
-### 4. Cinemática y Geometría
-Para esta parte, el sistema hace uso intensivo de la **Cinemática Inversa (IK)**.
-*   **Cinemática Inversa**: El `clasificador_node` trabaja en el **Espacio Cartesiano** (coordenadas X, Y, Z + Orientación RPY). El robot, sin embargo, se mueve rotando articulaciones.
-    *   El nodo envía una posición deseada (ej: `x=0.1, y=0.0, z=0.046` para recolección).
-    *   Un solver de cinemática (provisto por **MoveIt/KDL**) calcula qué ángulos deben tener las 4 articulaciones del brazo para situar el efector final exactamente en esa posición y con esa orientación (gripper mirando hacia abajo).
-*   **Jacobiano**: Aunque implícito para el usuario en este nivel, el solver utiliza la matriz Jacobiana para mapear las velocidades espaciales deseadas a velocidades articulares, asegurando movimientos suaves y evitando singularidades (puntos donde el robot pierde grados de libertad).
-
-### 5. Valores Importantes para Toma de Decisiones
-Los valores críticos que determinan el éxito de la clasificación están definidos en `poses.yaml`:
-*   **Zona de Recolección**: `x: 0.100, z: 0.046`. Esta altura es crítica; muy alta y no agarra el objeto, muy baja y choca con la mesa.
-*   **Home**: `z: 0.157`. Altura segura para moverse sin chocar obstáculos bajos.
-*   **Orientación (Roll: 3.142)**: Corresponde a ~180 grados (Pi), forzando al gripper a mirar siempre verticalmente hacia abajo, esencial para agarrar objetos desde arriba.
-*   **Apertura del Gripper**:
-    *   **Abierto**: `1.4` rad (aprox 80°). Suficiente para rodear los objetos.
-    *   **Cerrado**: `0.5` rad (aprox 28°). Presión suficiente para sostener sin aplastar o soltar.
+Este documento ofrece una explicación técnica profunda y exhaustiva sobre el funcionamiento, arquitectura y ejecución de las dos partes principales del proyecto: Clasificación Automática y Teleoperación Articular.
 
 ---
 
-## Parte 2: Control por Teclado (Teleoperación)
+## Parte 1: Control Automático (Clasificación Interactiva)
 
-Esta etapa permite el control manual directo de cada articulación del robot y la integración de un efector final neumático (ventosa) controlado por hardware externo.
+Esta sección describe la arquitectura distribuida utilizada para dotar al robot de autonomía para clasificar figuras (cubos, cilindros, etc.) en sus respectivos contenedores.
 
-### 1. Ejecución del Desarrollo
-Se desarrolló un nodo de teleoperación (`teleop_joint_node.py`) que captura las pulsaciones del teclado en tiempo real sin necesidad de presionar Enter (usando `tty` y `termios`).
-*   **Control Articular**: A diferencia del automático, aquí el usuario controla directamente el espacio articular (**Joint Space**). Teclas específicas (W/S, A/D, etc.) incrementan o decrementan el ángulo de una articulación específica.
-*   **Integración Hardware (Relé)**: Se implementó una comunicación Serial con un **Arduino** para controlar un relé. Esto permite encender/apagar una bomba de vacío (teclas O/P), simulando un "gripper neumático" real que no es parte estándar del paquete ROS.
+### 1. Arquitectura de Software y Nodos
+El sistema funciona mediante una arquitectura de nodos distribuidos en ROS 2 que se comunican asíncronamente.
 
-### 2. Archivos Usados
-*   **`teleop_joint_node.py`**: Nodo principal. Maneja la captura de teclado, el mapeo de teclas a joints, y la comunicación serial con Arduino.
-*   **`phantomx_pincher_arm.xacro`**: Define los límites físicos de cada articulación (`lower_limit`, `upper_limit`) que el movimiento debe respetar.
-*   **`gripper_neumatico.stl`**: Archivo de malla 3D integrado visualmente para representar la ventosa en la simulación/visualización.
+#### **A. Nodo Lógico: `clasificador_node` (Python)**
+Es el "cerebro" de la operación. No controla motores directamente, sino que orquesta la secuencia lógica.
+*   **Función**: Implementa una **Máquina de Estados Finitos (FSM)** que gestiona paso a paso la misión de pick-and-place.
+*   **Suscripción Principal**: 
+    *   **Tópico**: `/figure_type`
+    *   **Tipo**: `std_msgs/msg/String`
+    *   **Propósito**: Recibe la señal de inicio (ej: "cubo"). Esto dispara la transición del estado `IDLE` al inicio de la secuencia.
+*   **Gestión de Datos (`poses.yaml`)**:
+    *   Al iniciarse, lee un archivo YAML que actúa como base de datos persistente de coordenadas espaciales.
+    *   **Estructura**: Diccionario con claves (`caneca_roja`, `recoleccion`, etc.) y valores cartesianos (`x, y, z`) y de orientación (`roll, pitch, yaw`).
+    *   Esto permite calibrar el robot editando un archivo de texto sin recompilar código.
+*   **Control del Gripper**:
+    *   Utiliza un **Action Client** (`ActionClient`) para comunicarse con el controlador del gripper.
+    *   **Acción**: `gripper_trajectory_controller/follow_joint_trajectory`.
+    *   **Lógica**: Envía un `JointTrajectoryPoint` con la posición deseada (`1.4` abierto, `0.5` cerrado) y espera confirmación (feedback) antes de pasar al siguiente estado de la máquina.
 
-### 3. Conceptos de ROS 2 Usados
-*   **Action Clients**: `joint_trajectory_controller/follow_joint_trajectory`. En lugar de publicar velocidades, el nodo construye una trayectoria dinámica de un solo punto con una duración muy corta, enviando la nueva posición articular deseada continuamente. Esto garantiza movimientos fluidos.
-*   **Joint States**: Suscripción a `/joint_states` al inicio para sincronizar la posición interna del nodo con la posición real del robot, evitando "saltos" bruscos al conectar.
-*   **Interacción Serial**: Uso de la librería `pyserial` dentro de un nodo ROS para interactuar con hardware no-ROS (Arduino), puenteando el mundo ROS con actuadores externos simples.
+#### **B. Nodo de Comandancia: `commander` (C++)**
+Actúa como puente entre la lógica de alto nivel y el planificador de movimientos profundos (MoveIt).
+*   **Propósito**: Abstraer la complejidad de MoveIt para el nodo de Python. Recibe comandos simples ("ve a X,Y,Z") y los convierte en planes de movimiento complejos.
+*   **Suscripción Critica**:
+    *   **Tópico**: `/pose_command`
+    *   **Tipo**: `phantomx_pincher_interfaces/msg/PoseCommand`
+    *   **Estructura del Mensaje**:
+        ```python
+        float64 x
+        float64 y
+        float64 z
+        float64 roll
+        float64 pitch
+        float64 yaw
+        bool cartesian_path  # Define si el movimiento debe ser lineal estricto
+        ```
+*   **Interacción con MoveIt (`MoveGroupInterface`)**:
+    1.  Recibe el mensaje `PoseCommand`.
+    2.  Convierte los ángulos de Euler (Roll, Pitch, Yaw) a un **Cuaternión** (w, x, y, z) usando `tf2::Quaternion`, ya que ROS 2 opera internamente con cuaterniones para evitar el bloqueo de cardán (gimbal lock).
+    3.  Establece el `PoseTarget` en el grupo de planificación "arm".
+    4.  Invoca `move_group->plan()`: MoveIt calcula la Cinemática Inversa (IK) para encontrar los ángulos articulares necesarios.
+    5.  Invoca `move_group->execute()`: Envía la trayectoria calculada a los controladores de bajo nivel.
 
-### 4. Cinemática
-*   **Cinemática Directa (Forward Kinematics)**: En este modo, el usuario actúa como el "solver" inverso. El usuario decide los ángulos (entradas) y el robot (a través de `robot_state_publisher` y el URDF) calcula dónde termina el efector final en el espacio mediante Cinemática Directa.
-    *   Cada vez que cambiamos un ángulo $\theta_i$, las matrices de transformación homogénea se multiplican para actualizar la posición visual del robot en RViz.
-*   **Espacio de Trabajo**: Al controlar joints individualmente, es responsabilidad del operador mantener el robot dentro de su espacio de trabajo válido. Sin embargo, los límites definidos en el URDF (ficheros `.xacro`) actúan como barrera de seguridad.
+### 2. Flujo de Ejecución Detallado (Pipeline)
+1.  **Detección**: Un nodo externo de visión (simulado o real) publica string "pentagono" en `/figure_type`.
+2.  **Decisión**: `clasificador_node` consulta su mapa interno: `{'pentagono': 'caneca_azul'}`.
+3.  **Secuenciación**: La FSM inicia. Estado 1: `MOVING_TO_HOME`.
+4.  **Publicación**: `clasificador_node` publica en `/pose_command` los valores de 'home' del YAML.
+5.  **Planificación (IK)**: El nodo `commander` recibe el comando. Usa el plugin de cinemática (KDL o IKFast) para calcular los 4 ángulos de los servos.
+6.  **Ejecución**: El controlador de trayectoria interpola el movimiento y mueve el robot.
+7.  **Transición**: Un Timer en `clasificador_node` dispara el siguiente paso tras `TIME_MOVEMENT` segundos, enviando ahora la pose de `recoleccion`.
 
-### 5. Valores Importantes para Toma de Decisiones
-*   **`JOINT_STEP = 0.008` rad**: Este valor define la resolución de movimiento ("step") por cada pulsación de tecla.
-    *   Es un compromiso entre precisión (pasos finos para posicionamiento exacto) y velocidad (pasos grandes para moverse rápido). 0.008 rad (~0.45 grados) ofrece un control fino.
-*   **Límites de Joints (del Xacro)**:
-    *   Joint 1 (Base): `±150°` (2.61 rad).
-    *   Joint 2 (Hombro): `±120°` (2.09 rad).
-    *   Joint 3 (Codo): `±139°` (2.42 rad).
-    *   Joint 4 (Muñeca): `-98°` a `+103°`.
-*   **Posiciones de Home**:
-    *   `HOME`: `[0, 0, 0, 0]` (Robot extendido horizontalmente).
-    *   `HOME2`: `[0, 0, 1.57, 1.57]` (Robot en configuración L vertical, segura para reposo).
+### 3. Conceptos Clave de ROS 2 y Robótica
+*   **Cinemática Inversa (IK)**: Proceso matemático de calcular los ángulos de las articulaciones ($\theta_1, \theta_2, \theta_3, \theta_4$) necesarios para situar el efector final en una coordenada $(x, y, z)$ con una orientación específica. El `commander` delega esto a MoveIt.
+*   **Jacobiano**: Matriz que relaciona las velocidades articulares con la velocidad lineal y angular del efector final. MoveIt la utiliza para garantizar movimientos suaves y detectar singularidades (posiciones donde el robot pierde movilidad).
+*   **Trayectorias Cartesianas**: Cuando `cartesian_path=True`, el planificador no solo busca el punto final, sino que genera "waypoints" intermedios muy cercanos entre sí en una línea recta perfecta, esencial para movimientos de inserción o aproximación precisa.
+
+---
+
+## Parte 2: Teleoperación por Teclado (Control Articular Directo)
+
+Esta parte prescinde de la planificación automática y otorga control total de bajo nivel al operador, ideal para maniobras delicadas o recuperación de errores.
+
+### 1. Arquitectura del Nodo `teleop_joint_node.py`
+A diferencia del control automático, este nodo opera en el **Espacio Articular (Joint Space)** directamente.
+
+#### **A. Captura de Entrada (Non-blocking I/O)**
+*   Utiliza las librerías `termios` y `tty` de Linux para poner la terminal en modo "raw". Esto permite capturar pulsaciones de teclas individuales sin necesidad de presionar "Enter" y sin bloquear el bucle de ejecución del programa.
+*   Mapeo de teclas:
+    *   W/S: Joint 2 (Hombro)
+    *   A/D: Joint 1 (Base - Rotación)
+    *   Q/E: Joint 3 (Codo)
+    *   Z/X: Joint 4 (Muñeca)
+
+#### **B. Control de Motores (Action Client Rápido)**
+En lugar de un tópico simple, usa un Action Client para máxima robustez, pero optimizado para velocidad.
+*   **Cliente**: `joint_trajectory_controller/follow_joint_trajectory`.
+*   **Generación de Trayectoria**:
+    *   Cada vez que se presiona una tecla, se actualiza un array local `joint_positions`.
+    *   Se crea un `JointTrajectoryPoint` con **un solo punto**.
+    *   **Critical**: El parámetro `time_from_start` se configura en un valor muy bajo (milisegundos). Esto fuerza al controlador a alcanzar la nueva posición casi instantáneamente, dando la sensación de respuesta en tiempo real al usuario.
+
+#### **C. Sincronización de Estado (`/joint_states`)**
+*   Al iniciar, el nodo se suscribe una única vez a `/joint_states`.
+*   **Objetivo**: Leer la configuración física real del robot antes de enviar el primer comando.
+*   **Por qué**: Si el nodo iniciara asumiendo que el robot está en ceros (0,0,0,0) pero el robot físico está doblado, el primer comando causaría un "salto" violento y peligroso. La sincronización inicializa el estado virtual del nodo con la realidad física.
+
+#### **D. Integración de Hardware Externo (Arduino + Relé)**
+Para controlar la ventosa (que no es un servo Dynamixel y no aparece en el bus ROS estándar), se implementa un driver híbrido.
+*   **Librería**: `pyserial`.
+*   **Puerto**: `/dev/ttyACM0` (típicamente).
+*   **Protocolo**: Comunicación Serial (UART) a 9600 baudios.
+    *   Envía byte `'O'` -> Arduino activa pin digital -> Relé cierra circuito -> Bomba Vacío ON.
+    *   Envía byte `'P'` -> Arduino desactiva pin -> Bomba Vacío OFF.
+*   Este diseño demuestra cómo ROS 2 puede coexistir e integrar hardware embebido simple ("micro-ROS" conceptual) dentro de un nodo de alto nivel.
+
+### 2. Archivos Críticos y Configuración
+
+*   **`phantomx_pincher_arm.xacro`**:
+    *   Define los límites físicos (`limit lower="..." upper="..."`). El nodo de teleoperación no valida colisiones complejas, por lo que confía en que los límites del URDF y del hardware protejan al robot de autocolisiones básicas.
+    *   Integra visualmente la malla `gripper_neumatico.stl` para que el operador vea la herramienta correcta en RViz.
+*   **`teleop_joint_node.py`**:
+    *   Contiene la lógica de interpolación "suave" para la función "Go to Home". Cuando el usuario presiona Espacio, el nodo no envía el comando final inmediatamente. En su lugar, calcula 100 pasos intermedios y los envía secuencialmente en un bucle (`time.sleep`), generando una animación fluida generada por software.
+
+### 3. Valores Clave para Operación
+*   **Step Size (Resolución)**: `0.008 radianes` (~0.45 grados).
+    *   Un valor menor daría más precisión pero haría el movimiento muy lento.
+    *   Un valor mayor haría el robot "saltar" demasiado, dificultando alinear la ventosa con un objeto.
+*   **Posiciones Predefinidas (Home)**:
+    *   `HOME` (Horizontal): `[0.0, 0.0, 0.0, 0.0]`. Centro de gravedad extendido (mayor torque en servos base).
+    *   `HOME2` (Vertical): `[0.0, 0.0, 1.57, 1.57]`. Configuración de "vela" o reposo, minimiza el esfuerzo de retención (holding torque) debido a que la gravedad actúa alineada con los eslabones.
+
+---
+**Resumen de Interacción de Sistemas:**
+Usuario/Cámara ⮕ Nodo Python (Lógica) ⮕ Nodo C++ (Geometría/MoveIt) ⮕ Controladores ROS 2 ⮕ Hardware (Dynamixel/Arduino).
