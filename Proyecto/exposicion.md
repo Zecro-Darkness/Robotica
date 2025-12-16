@@ -251,3 +251,51 @@ Se usó un eslabón maestro llamado `baseFija_link` (la madera/mesa) como refere
 2.  **Materiales**: Se diferencia cada una asignando una etiqueta `<material name="red"/>`, `<material name="blue"/>`, etc., definidas en la cabecera del archivo.
 3.  **Colisiones**: A diferencia de elementos puramente decorativos, aquí se añadió la etiqueta `<collision>`. Esto es **crítico** para MoveIt: permite que el planificador de trayectorias detecte la caneca como un obstáculo y calcule rutas que eviten golpearla al depositar objetos.
 
+```mermaid
+stateDiagram-v2
+    direction TB
+    
+    %% Estado Inicial
+    [*] --> IDLE
+    
+    %% Secuencia de Inicio
+    IDLE --> MOVING_TO_HOME_START: Recibe '/figure_type'
+    MOVING_TO_HOME_START --> OPENING_GRIPPER_START: Llegada a Home
+    OPENING_GRIPPER_START --> MOVING_TO_PICKUP: Gripper Abierto
+    
+    %% Zona de Recolección
+    MOVING_TO_PICKUP --> CLOSING_GRIPPER: En Posición de Recolección
+    CLOSING_GRIPPER --> MOVING_TO_HOME_WITH_OBJECT: Objeto Sujeto
+    
+    %% Lógica de Decisión (Filtro por Tipo de Figura)
+    state decision_point <<choice>>
+    MOVING_TO_HOME_WITH_OBJECT --> decision_point: En Home (con objeto)
+    
+    decision_point --> MOVING_TO_BIN: Cubo/Cilíndro/Rect/Pentágono
+    decision_point --> MOVING_TO_SAFE_POS_1: Otros (Ruta Larga)
+    
+    %% Ruta de Transporte (Directa vs Segura)
+    MOVING_TO_SAFE_POS_1 --> MOVING_TO_SAFE_POS_2
+    MOVING_TO_SAFE_POS_2 --> MOVING_TO_SAFE_POS_3
+    MOVING_TO_SAFE_POS_3 --> MOVING_TO_SAFE_POS_4
+    MOVING_TO_SAFE_POS_4 --> MOVING_TO_BIN
+    
+    %% Entrega
+    MOVING_TO_BIN --> OPENING_GRIPPER_DROP: En Caneca Destino
+    
+    %% Lógica de Retorno
+    state return_decision <<choice>>
+    OPENING_GRIPPER_DROP --> return_decision: Objeto Soltado
+    
+    return_decision --> RETURNING_TO_HOME_END: Retorno Directo
+    return_decision --> RETURNING_TO_SAFE_POS_4: Retorno Largo
+    
+    %% Finalización
+    RETURNING_TO_HOME_END --> COMPLETED
+    RETURNING_TO_SAFE_POS_4 --> RETURNING_TO_SAFE_POS_3
+    RETURNING_TO_SAFE_POS_3 --> RETURNING_TO_SAFE_POS_2
+    RETURNING_TO_SAFE_POS_2 --> RETURNING_TO_SAFE_POS_1
+    RETURNING_TO_SAFE_POS_1 --> RETURNING_TO_HOME_END
+    
+    COMPLETED --> IDLE: Listo para nueva figura
+```
