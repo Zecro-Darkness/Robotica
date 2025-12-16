@@ -122,3 +122,24 @@ Para controlar la ventosa (que no es un servo Dynamixel y no aparece en el bus R
 ---
 **Resumen de Interacción de Sistemas:**
 Usuario/Cámara ⮕ Nodo Python (Lógica) ⮕ Nodo C++ (Geometría/MoveIt) ⮕ Controladores ROS 2 ⮕ Hardware (Dynamixel/Arduino).
+
+
+```mermaid
+stateDiagram-v2
+    [*] --> IDLE
+    IDLE --> MOVING_TO_HOME_START: Recibe '/figure_type'
+    MOVING_TO_HOME_START --> OPENING_GRIPPER_START: Llegó a Home
+    OPENING_GRIPPER_START --> MOVING_TO_PICKUP: Gripper Abierto
+    MOVING_TO_PICKUP --> CLOSING_GRIPPER: Llegó a Recolección
+    CLOSING_GRIPPER --> MOVING_TO_HOME_WITH_OBJECT: Gripper Cerrado
+    
+    state "Decisión de Destino" as Decision
+    MOVING_TO_HOME_WITH_OBJECT --> Decision: Objeto Levantado
+    
+    Decision --> MOVING_TO_BIN: Ir a Caneca (Roja/Verde/Azul/Amarilla)
+    
+    MOVING_TO_BIN --> OPENING_GRIPPER_DROP: Llegó a Caneca
+    OPENING_GRIPPER_DROP --> RETURNING_TO_HOME_END: Gripper Abierto (Soltó Objeto)
+    RETURNING_TO_HOME_END --> COMPLETED: Retorno Finalizado
+    COMPLETED --> IDLE: Reiniciar Ciclo
+```
