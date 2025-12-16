@@ -125,21 +125,36 @@ Usuario/Cámara ⮕ Nodo Python (Lógica) ⮕ Nodo C++ (Geometría/MoveIt) ⮕ C
 
 
 ```mermaid
-stateDiagram-v2
-    [*] --> IDLE
-    IDLE --> MOVING_TO_HOME_START: Recibe '/figure_type'
-    MOVING_TO_HOME_START --> OPENING_GRIPPER_START: Llegó a Home
-    OPENING_GRIPPER_START --> MOVING_TO_PICKUP: Gripper Abierto
-    MOVING_TO_PICKUP --> CLOSING_GRIPPER: Llegó a Recolección
-    CLOSING_GRIPPER --> MOVING_TO_HOME_WITH_OBJECT: Gripper Cerrado
+graph TD
+    %% Nodos externos o simulados
+    Camera[Cámara/Simulador] -->|/figure_type std_msgs/String| ClasificadorNode
     
-    state "Decisión de Destino" as Decision
-    MOVING_TO_HOME_WITH_OBJECT --> Decision: Objeto Levantado
-    
-    Decision --> MOVING_TO_BIN: Ir a Caneca (Roja/Verde/Azul/Amarilla)
-    
-    MOVING_TO_BIN --> OPENING_GRIPPER_DROP: Llegó a Caneca
-    OPENING_GRIPPER_DROP --> RETURNING_TO_HOME_END: Gripper Abierto (Soltó Objeto)
-    RETURNING_TO_HOME_END --> COMPLETED: Retorno Finalizado
-    COMPLETED --> IDLE: Reiniciar Ciclo
+    %% Nodo Principal de Lógica
+    subgraph "Nivel de Aplicación (Python)"
+        ClasificadorNode([clasificador_node])
+    end
+
+    %% Comunicación Intermedia
+    ClasificadorNode -->|/pose_command PoseCommand| CommanderNode
+    ClasificadorNode -.->|Action Client| GripperActionServer
+
+    %% Nivel de Movimiento
+    subgraph "Nivel de Planificación (C++)"
+        CommanderNode([commander_node])
+        MoveIt[MoveIt 2 Framework]
+        CommanderNode -->|MoveGroupInterface| MoveIt
+    end
+
+    %% Nivel de Hardware
+    subgraph "Nivel de Control (Hardware Interface)"
+        MoveIt -->|/joint_trajectory_controller/joint_trajectory| JointTrajectoryController
+        JointTrajectoryController -->|Hardware Interface| RobotHardware[Motores Dynamixel]
+        
+        GripperActionServer[Gripper Controller] -->|Hardware Interface| RobotHardware
+    end
+
+    %% Estilos
+    style ClasificadorNode fill:#f9f,stroke:#333,stroke-width:2px
+    style CommanderNode fill:#bbf,stroke:#333,stroke-width:2px
+    style RobotHardware fill:#bfb,stroke:#333,stroke-width:2px
 ```
