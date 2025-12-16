@@ -124,37 +124,44 @@ Para controlar la ventosa (que no es un servo Dynamixel y no aparece en el bus R
 Usuario/Cámara ⮕ Nodo Python (Lógica) ⮕ Nodo C++ (Geometría/MoveIt) ⮕ Controladores ROS 2 ⮕ Hardware (Dynamixel/Arduino).
 
 
-```mermaid
-graph TD
-    %% Nodos externos o simulados
-    Camera[Cámara/Simulador] -->|/figure_type std_msgs/String| ClasificadorNode
+stateDiagram-v2
+    direction TB
     
-    %% Nodo Principal de Lógica
-    subgraph "Nivel de Aplicación (Python)"
-        ClasificadorNode([clasificador_node])
-    end
-
-    %% Comunicación Intermedia
-    ClasificadorNode -->|/pose_command PoseCommand| CommanderNode
-    ClasificadorNode -.->|Action Client| GripperActionServer
-
-    %% Nivel de Movimiento
-    subgraph "Nivel de Planificación (C++)"
-        CommanderNode([commander_node])
-        MoveIt[MoveIt 2 Framework]
-        CommanderNode -->|MoveGroupInterface| MoveIt
-    end
-
-    %% Nivel de Hardware
-    subgraph "Nivel de Control (Hardware Interface)"
-        MoveIt -->|/joint_trajectory_controller/joint_trajectory| JointTrajectoryController
-        JointTrajectoryController -->|Hardware Interface| RobotHardware[Motores Dynamixel]
-        
-        GripperActionServer[Gripper Controller] -->|Hardware Interface| RobotHardware
-    end
-
-    %% Estilos
-    style ClasificadorNode fill:#f9f,stroke:#333,stroke-width:2px
-    style CommanderNode fill:#bbf,stroke:#333,stroke-width:2px
-    style RobotHardware fill:#bfb,stroke:#333,stroke-width:2px
-```
+    %% Status
+    [*] --> IDLE
+    
+    %% Initialization
+    IDLE --> MOVING_TO_HOME_START: Receive /figure_type
+    MOVING_TO_HOME_START --> OPENING_GRIPPER_START: Success
+    OPENING_GRIPPER_START --> MOVING_TO_PICKUP: Gripper Open
+    
+    %% Retrieval
+    MOVING_TO_PICKUP --> CLOSING_GRIPPER: At Pickup Zone
+    CLOSING_GRIPPER --> MOVING_TO_HOME_WITH_OBJECT: Gripper Closed
+    
+    %% Decision & Transport
+    state decision_point <<choice>>
+    MOVING_TO_HOME_WITH_OBJECT --> decision_point: Object Lifted
+    
+    decision_point --> MOVING_TO_BIN: Direct (Cube/Rect/Pent/Cyl)
+    decision_point --> MOVING_TO_SAFE_POS_1: Others (Via Safe Points)
+    
+    %% Safe Path (Optional)
+    MOVING_TO_SAFE_POS_1 --> MOVING_TO_SAFE_POS_2
+    MOVING_TO_SAFE_POS_2 --> MOVING_TO_SAFE_POS_3
+    MOVING_TO_SAFE_POS_3 --> MOVING_TO_SAFE_POS_4
+    MOVING_TO_SAFE_POS_4 --> MOVING_TO_BIN
+    
+    %% Delivery
+    MOVING_TO_BIN --> OPENING_GRIPPER_DROP: At Bin
+    
+    %% Return Logic
+    state return_decision <<choice>>
+    OPENING_GRIPPER_DROP --> return_decision: Object Dropped
+    
+    return_decision --> RETURNING_TO_HOME_END: Direct Return
+    return_decision --> RETURNING_TO_SAFE_POS_4: Complex Return
+    
+    %% Completion
+    RETURNING_TO_HOME_END --> COMPLETED
+    COMPLETED --> IDLE: Sequence Finished
