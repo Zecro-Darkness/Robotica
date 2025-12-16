@@ -165,3 +165,89 @@ stateDiagram-v2
     %% Completion
     RETURNING_TO_HOME_END --> COMPLETED
     COMPLETED --> IDLE: Sequence Finished
+
+    # Implementación de Componentes 3D en XACRO (Canecas y Gripper)
+
+A continuación se explica técnicamente cómo se integraron los modelos visuales 3D (meshes) de las Canecas y el Gripper Neumático dentro de la descripción del robot (URDF/XACRO).
+
+## 1. Integración del Gripper Neumático (Ventosa)
+
+**Archivo:** `phantomx_pincher_arm.xacro`
+
+La ventosa no es una articulación móvil motorizada estándar del robot (como los motores Dynamixel), por lo que se modeló como un **eslabón rígido (Fixed Link)** adherido al servo de la muñeca.
+
+### Código Implementado:
+```xml
+<!-- Eslabón Visual (Sin propiedades inerciales complejas) -->
+<link name="${prefix}suction_cup_link">
+  <visual>
+    <geometry>
+      <!-- Carga del archivo STL personalizado -->
+      <mesh filename="package://phantomx_pincher_description/meshes/STL/gripper_neumatico.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+</link>
+
+<!-- Unión Fija al Robot -->
+<joint name="${prefix}gripper_to_suction_joint" type="fixed">
+    <!-- El "padre" es el servo de la muñeca, lo que hace que la ventosa se mueva con él -->
+    <parent link="${prefix}gripper_servo_link"/>
+    <child link="${prefix}suction_cup_link"/>
+    <!-- Ajuste manual de posición (XYZ) y rotación (RPY) para alinear la malla -->
+    <origin xyz="-0.056 -0.01 -0.1" rpy="${pi/2} ${3*pi/2} ${pi}"/>
+</joint>
+```
+
+### Explicación Lógica:
+1.  **Parent Link (`gripper_servo_link`)**: Se eligió el eslabón del servo de la muñeca como punto de anclaje. Esto garantiza que cuando el robot mueve la muñeca (pitch), la ventosa se mueve solidariamente.
+2.  **Transformada (`origin`)**: Se realizó un ajuste fino de `xyz` y `rpy` (Roll, Pitch, Yaw). Esto fue necesario porque el origen del archivo STL no coincidía perfectamente con el eje del motor, por lo que se desplazó y rotó hasta que visualmente encajó en el modelo en RViz.
+3.  **Scale**: Se aplicó `0.001` porque los STLs suelen exportarse en milímetros, pero ROS trabaja estrictamente en metros.
+
+---
+
+## 2. Integración de las Canecas (Entorno)
+
+**Archivo:** `kit.xacro`
+
+Las canecas son elementos estáticos del entorno (no parte del robot), por lo que se definieron en un archivo separado (`kit.xacro`) que describe la "celda de manufactura" o mesa de trabajo.
+
+### Estrategia de Implementación:
+Se usó un eslabón maestro llamado `baseFija_link` (la madera/mesa) como referencia. Todas las canecas se definen con **joints fijos (`type="fixed"`)** relativos a esta base.
+
+### Código Implementado (Ejemplo Caneca Roja):
+```xml
+<!-- Definición de la Caneca Izquierda (Roja) -->
+<link name="canecaLateralIzquierda_link">
+  <visual>
+    <geometry>
+      <!-- Reutilización del mismo archivo STL para todas las canecas -->
+      <mesh filename="package://phantomx_pincher_description/meshes/STL/canecaGrande.stl"
+            scale="0.001 0.001 0.001" />
+    </geometry>
+    <!-- El material define el color diferenciador -->
+    <material name="red" />
+  </visual>
+  <collision>
+    <!-- Se añade colisión para que MoveIt sepa que no puede atravesarla -->
+    <geometry>
+      <mesh filename="package://phantomx_pincher_description/meshes/STL/canecaGrande.stl"
+            scale="0.001 0.001 0.001" />
+    </geometry>
+  </collision>
+</link>
+
+<!-- Posicionamiento -->
+<joint name="base_canecaLateralIzquierda_joint" type="fixed">
+  <parent link="baseFija_link" />
+  <child link="canecaLateralIzquierda_link" />
+  <!-- Coordenadas exactas medidas desde el centro de la base -->
+  <origin xyz="-0.0135 0.12775 0.016" rpy="0 0 0" />
+</joint>
+```
+
+### Puntos Clave:
+1.  **Reutilización de Meshes**: Se usa el mismo archivo `canecaGrande.stl` para las 4 canecas.
+2.  **Materiales**: Se diferencia cada una asignando una etiqueta `<material name="red"/>`, `<material name="blue"/>`, etc., definidas en la cabecera del archivo.
+3.  **Colisiones**: A diferencia de elementos puramente decorativos, aquí se añadió la etiqueta `<collision>`. Esto es **crítico** para MoveIt: permite que el planificador de trayectorias detecte la caneca como un obstáculo y calcule rutas que eviten golpearla al depositar objetos.
+
