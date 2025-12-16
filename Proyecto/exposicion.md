@@ -253,29 +253,31 @@ Se usó un eslabón maestro llamado `baseFija_link` (la madera/mesa) como refere
 
 ```mermaid
 stateDiagram-v2
-    direction LR
-
+    direction TB
+    
     [*] --> IDLE
-
+    
     IDLE --> MOVING_TO_HOME_START: Recibe '/figure_type'
     MOVING_TO_HOME_START --> OPENING_GRIPPER_START: Llegada a Home
     OPENING_GRIPPER_START --> MOVING_TO_PICKUP: Gripper Abierto
+    
     MOVING_TO_PICKUP --> CLOSING_GRIPPER: En Posición de Recolección
     CLOSING_GRIPPER --> MOVING_TO_HOME_WITH_OBJECT: Objeto Sujeto
-
+    
     state decision_point <<choice>>
     MOVING_TO_HOME_WITH_OBJECT --> decision_point: En Home (con objeto)
     decision_point --> MOVING_TO_BIN: Cubo/Cilíndro/Rect/Pentágono
     decision_point --> MOVING_TO_BIN: Otros
-
+    
     MOVING_TO_BIN --> OPENING_GRIPPER_DROP: En Caneca Destino
-
+    
     state return_decision <<choice>>
     OPENING_GRIPPER_DROP --> return_decision: Objeto Soltado
     return_decision --> RETURNING_TO_HOME_END: Retorno
-
+    
     RETURNING_TO_HOME_END --> COMPLETED
     COMPLETED --> IDLE: Listo para nueva figura
+
 
 
 ```
